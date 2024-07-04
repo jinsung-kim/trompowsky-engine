@@ -1,3 +1,5 @@
+from engine import Move
+from typing import Optional
 
 
 class Board:
@@ -20,18 +22,22 @@ class Board:
   def __repr__(self) -> str:
     return '\n'.join([' '.join(row) for row in self.board])
 
-  def make_move(self, i, j, ni, nj) -> bool:
-    '''
-    Attempts to move a piece from (i, j) to (ni, nj).
+  def make_move(self, move: Move) -> bool:
+    """
+    Moves a piece from (i, j) to (ni, nj). Moves will be pre-vetted so
+    once this function is handed the move - it is assumed that it is valid.
 
     args:
-      i (int): The row index of the piece to move.
-      j (int): The column index of the piece to move.
-      ni (int): The row index of the destination.
-      nj (int): The column index of the destination.
+      move (Move): The current position of the piece and the desired place of the piece.
+    """
+    pass
 
-    Returns:
-      bool: True if the move is successful, False otherwise - in which case the
-      board is reverted to its state.
-    '''
-    return False
+  def return_valid_move(self, i, j, ni, nj) -> Optional[Move]:
+    color = self.board[j][i][0]
+    oppo = 'b' if color == 'w' else 'w'
+    if self.board[nj][ni] == '--':
+      return Move(i, j, ni, nj, False)
+    elif oppo == self.board[nj][ni][0]:
+      return Move(i, j, ni, nj, True)
+    else:
+      return None

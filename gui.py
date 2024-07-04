@@ -1,5 +1,6 @@
 import pygame # type: ignore
 from board import Board
+from engine import Engine
 
 DISPLAY_HEIGHT = 400
 DISPLAY_WIDTH = 400
@@ -67,6 +68,10 @@ class Gui:
       for j in range(8):
         if (board.board[j][i] != "--"):
           self.game_display.blit(image_dict[board.board[j][i]], ((i * 50) - 5, (j * 50) - 5))
+
+  # TODO: Take user input -> Generate valid moves for that piece -> Highlight them.
+  def highlight_moves(self, engine: Engine, board: Board):
+    pass
 
   def update_game_state(self, board):
     self.draw_board()
