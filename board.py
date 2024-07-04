@@ -1,26 +1,46 @@
-from engine import Move
+from move import Move
 from typing import Optional
+from copy import deepcopy
+
+EMPTY_BOARD = [
+  ['--', '--', '--', '--', '--', '--', '--', '--'],
+  ['--', '--', '--', '--', '--', '--', '--', '--'],
+  ['--', '--', '--', '--', '--', '--', '--', '--'],
+  ['--', '--', '--', '--', '--', '--', '--', '--'],
+  ['--', '--', '--', '--', '--', '--', '--', '--'],
+  ['--', '--', '--', '--', '--', '--', '--', '--'],
+  ['--', '--', '--', '--', '--', '--', '--', '--'],
+  ['--', '--', '--', '--', '--', '--', '--', '--']
+]
+
+START_BOARD = [
+  ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
+  ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
+  ["--", "--", "--", "--", "--", "--", "--", "--"],
+  ["--", "--", "--", "--", "--", "--", "--", "--"],
+  ["--", "--", "--", "--", "--", "--", "--", "--"],
+  ["--", "--", "--", "--", "--", "--", "--", "--"],
+  ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
+  ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
+]
 
 
 class Board:
 
-  def __init__(self):
-    self.board = [
-      ["bR", "bN", "bB", "bQ", "bK", "bB", "bN", "bR"],
-      ["bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP"],
-      ["--", "--", "--", "--", "--", "--", "--", "--"],
-      ["--", "--", "--", "--", "--", "--", "--", "--"],
-      ["--", "--", "--", "--", "--", "--", "--", "--"],
-      ["--", "--", "--", "--", "--", "--", "--", "--"],
-      ["wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP"],
-      ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]
-    ]
+  def __init__(self, is_test_board: bool = False):
+    if is_test_board:
+      self.board = deepcopy(EMPTY_BOARD)
+    else:
+      self.board = deepcopy(START_BOARD)
 
     # TODO: Track all of the game moves.
     self.game_log = []
 
   def __repr__(self) -> str:
-    return '\n'.join([' '.join(row) for row in self.board])
+    return '\n' + '\n'.join([' '.join(row) for row in self.board]) + '\n'
+
+  def clear_board(self):
+    self.board = deepcopy(EMPTY_BOARD)
 
   def make_move(self, move: Move) -> bool:
     """

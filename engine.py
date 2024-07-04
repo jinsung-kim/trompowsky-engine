@@ -1,21 +1,6 @@
 from board import Board
-from typing import List, Callable
-
-
-class Move:
-
-  def __init__(self, i, j, ni, nj, is_capture_move) -> None:
-    self.i, self.j, self.ni, self.nj, self.is_capture_move = \
-      i, j, ni, nj, is_capture_move
-
-  def __repr__(self) -> str:
-    return f"({self.i}, {self.j}) -> ({self.ni}, {self.nj}) is_capture_move={self.is_capture_move}"
-
-  def __eq__(self, other: 'Move') -> bool:
-    if not isinstance(other, Move):
-      return NotImplemented
-    return (self.i, self.j, self.ni, self.nj, self.is_capture_move) == \
-      (other.i, other.j, other.ni, other.nj, other.is_capture_move)
+from typing import List, Callable, Tuple
+from move import Move
 
 
 class Engine:
@@ -39,10 +24,9 @@ class Engine:
     """
     pass
 
-  def generate_moves_in_direction(self, i: int, j: int, direction: Callable[[int, int], (int, int)]) -> List[Move]:
+  def generate_moves_in_direction(self, i: int, j: int, direction: Callable[[int, int], Tuple[int, int]]) -> List[Move]:
     moves: List[Move] = []
     ni, nj = direction(i, j)
-
     while 0 <= ni < 8 and 0 <= nj < 8:
       move_maybe = self.board.return_valid_move(i, j, ni, nj)
       if move_maybe is not None:

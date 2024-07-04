@@ -1,0 +1,101 @@
+import sys
+import os
+import unittest
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+sys.path.append(parent_dir)
+
+from board import Board
+from engine import Engine
+from move import Move
+
+
+class TestQueenMoveGeneration(unittest.TestCase):
+
+  def setUp(self):
+    # Initialize fresh instances for each test case
+    self.board = Board(is_test_board=True)
+    self.engine = Engine(self.board)
+
+  def tearDown(self):
+    # Clean up any state between test cases
+    self.board.clear_board()
+
+  def test_queen_moves_from_center(self):
+    # Placing a queen at the center with no other pieces on the board.
+    self.board.board[3][3] = 'wQ'
+    expected_moves = self.engine.generate_rook_moves(3, 3) + self.engine.generate_bishop_moves(3, 3)
+    actual_moves = self.engine.generate_queen_moves(3, 3)
+    # TODO: Write a proper sort.
+    self.assertEqual(sorted(actual_moves,
+                            key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+
+  def test_queen_moves_with_friendly_pieces_blocking(self):
+    # Placing a queen at the center and friendly pieces blocking its path.
+    self.board.board[3][3] = 'wQ'
+    self.board.board[3][5] = 'wP'  # Friendly piece blocking right.
+    self.board.board[5][3] = 'wP'  # Friendly piece blocking down.
+
+    expected_moves = [
+      Move(3, 3, 2, 3), Move(3, 3, 1, 3), Move(3, 3, 0, 3),  # Left
+      Move(3, 3, 3, 2), Move(3, 3, 3, 1), Move(3, 3, 3, 0),  # Up
+      Move(3, 3, 4, 3),  # Right up to friendly piece
+      Move(3, 3, 3, 4),  # Down up to friendly piece
+      Move(3, 3, 2, 2), Move(3, 3, 1, 1), Move(3, 3, 0, 0),  # Top-left
+      Move(3, 3, 4, 4), Move(3, 3, 5, 5),
+      Move(3, 3, 6, 6), Move(3, 3, 7, 7),  # Bottom-right up to friendly piece
+      Move(3, 3, 2, 4), Move(3, 3, 1, 5), Move(3, 3, 0, 6),  # Bottom-left
+      Move(3, 3, 4, 2), Move(3, 3, 5, 1), Move(3, 3, 6, 0)  # Top-right
+    ]
+
+    actual_moves = self.engine.generate_queen_moves(3, 3)
+    self.assertEqual(sorted(actual_moves,
+                            key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+
+  def test_queen_moves_with_opposing_pieces_blocking(self):
+    # Placing a queen at the center and opposing pieces blocking its path.
+    self.board.board[3][3] = 'wQ'
+    self.board.board[3][5] = 'bP'  # Opposing piece blocking right.
+    self.board.board[5][3] = 'bP'  # Opposing piece blocking down.
+    expected_moves = [
+      Move(3, 3, 2, 3), Move(3, 3, 1, 3), Move(3, 3, 0, 3),  # Left
+      Move(3, 3, 3, 2), Move(3, 3, 3, 1), Move(3, 3, 3, 0),  # Up
+      Move(3, 3, 4, 3), Move(3, 3, 5, 3, True),  # Right up to enemy piece
+      Move(3, 3, 3, 4), Move(3, 3, 3, 5, True),  # Down up to enemy piece
+      Move(3, 3, 2, 2), Move(3, 3, 1, 1), Move(3, 3, 0, 0),  # Top-left
+      Move(3, 3, 4, 4), Move(3, 3, 5, 5),
+      Move(3, 3, 6, 6), Move(3, 3, 7, 7),  # Bottom-right up to friendly piece
+      Move(3, 3, 2, 4), Move(3, 3, 1, 5), Move(3, 3, 0, 6),  # Bottom-left
+      Move(3, 3, 4, 2), Move(3, 3, 5, 1), Move(3, 3, 6, 0)  # Top-right
+    ]
+
+    actual_moves = self.engine.generate_queen_moves(3, 3)
+    self.assertEqual(sorted(actual_moves,
+                            key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+
+  def test_queen_moves_from_edge(self):
+    # Placing a queen at the edge of the board.
+    self.board.board[0][0] = 'wQ'
+    expected_moves = [
+      Move(0, 0, 1, 0), Move(0, 0, 2, 0),
+      Move(0, 0, 3, 0), Move(0, 0, 4, 0),
+      Move(0, 0, 5, 0), Move(0, 0, 6, 0),
+      Move(0, 0, 7, 0),  # Right
+      Move(0, 0, 0, 1), Move(0, 0, 0, 2),
+      Move(0, 0, 0, 3), Move(0, 0, 0, 4),
+      Move(0, 0, 0, 5), Move(0, 0, 0, 6),
+      Move(0, 0, 0, 7),  # Down
+      Move(0, 0, 1, 1), Move(0, 0, 2, 2),
+      Move(0, 0, 3, 3), Move(0, 0, 4, 4),
+      Move(0, 0, 5, 5), Move(0, 0, 6, 6),
+      Move(0, 0, 7, 7)  # Bottom-right
+    ]
+
+    actual_moves = self.engine.generate_queen_moves(0, 0)
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
+                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+
+
+if __name__ == '__main__':
+  unittest.main()
