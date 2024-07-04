@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move
+from move import Move, SCORE_PIECE
 
 
 class TestRookMoveGeneration(unittest.TestCase):
@@ -68,8 +68,8 @@ class TestRookMoveGeneration(unittest.TestCase):
     expected_moves = [
       Move(3, 3, 2, 3), Move(3, 3, 1, 3), Move(3, 3, 0, 3),  # Left
       Move(3, 3, 3, 2), Move(3, 3, 3, 1), Move(3, 3, 3, 0),  # Up
-      Move(3, 3, 4, 3),  Move(3, 3, 5, 3, True),  # Right up to enemy piece.
-      Move(3, 3, 3, 4),  Move(3, 3, 3, 5, True)  # Down up to enemy piece.
+      Move(3, 3, 4, 3),  Move(3, 3, 5, 3, True, SCORE_PIECE['P']),  # Right up to enemy piece.
+      Move(3, 3, 3, 4),  Move(3, 3, 3, 5, True, SCORE_PIECE['P'])  # Down up to enemy piece.
     ]
 
     actual_moves = self.engine.generate_rook_moves(3, 3)

@@ -9,21 +9,6 @@ class Engine:
     self.ai_move = False
     self.board = board
 
-  def generate_user_moves(self, i, j, board: Board) -> List[Move]:
-    """
-    For any given piece, will return a list of moves that the user can make.
-    TODO: Must always check that the king is not in danger through any move.
-
-    Args:
-      i (int): The row index of the piece to move.
-      j (int): The column index of the piece to move.
-      board (Board): The current state of the board.
-
-    Returns:
-      List[Move]: A list of possible moves for the piece located at (i, j).
-    """
-    pass
-
   def generate_moves_in_direction(self, i: int, j: int, direction: Callable[[int, int], Tuple[int, int]]) -> List[Move]:
     moves: List[Move] = []
     ni, nj = direction(i, j)

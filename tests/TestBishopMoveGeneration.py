@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move
+from move import Move, SCORE_PIECE
 
 
 class TestBishopMoveGeneration(unittest.TestCase):
@@ -65,8 +65,8 @@ class TestBishopMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 2),
       Move(3, 3, 5, 1),
       Move(3, 3, 6, 0),
-      Move(3, 3, 2, 2, True),
-      Move(3, 3, 4, 4, True)
+      Move(3, 3, 2, 2, True, SCORE_PIECE['P']),
+      Move(3, 3, 4, 4, True, SCORE_PIECE['P'])
     ]
 
     actual_moves = self.engine.generate_bishop_moves(3, 3)
