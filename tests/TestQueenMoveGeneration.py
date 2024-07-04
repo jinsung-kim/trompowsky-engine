@@ -14,16 +14,13 @@ from move import Move
 class TestQueenMoveGeneration(unittest.TestCase):
 
   def setUp(self):
-    # Initialize fresh instances for each test case
     self.board = Board(is_test_board=True)
     self.engine = Engine(self.board)
 
   def tearDown(self):
-    # Clean up any state between test cases
     self.board.clear_board()
 
   def test_queen_moves_from_center(self):
-    # Placing a queen at the center with no other pieces on the board.
     self.board.board[3][3] = 'wQ'
     expected_moves = self.engine.generate_rook_moves(3, 3) + self.engine.generate_bishop_moves(3, 3)
     actual_moves = self.engine.generate_queen_moves(3, 3)
@@ -32,7 +29,6 @@ class TestQueenMoveGeneration(unittest.TestCase):
                             key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
   def test_queen_moves_with_friendly_pieces_blocking(self):
-    # Placing a queen at the center and friendly pieces blocking its path.
     self.board.board[3][3] = 'wQ'
     self.board.board[3][5] = 'wP'  # Friendly piece blocking right.
     self.board.board[5][3] = 'wP'  # Friendly piece blocking down.
@@ -54,7 +50,6 @@ class TestQueenMoveGeneration(unittest.TestCase):
                             key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
   def test_queen_moves_with_opposing_pieces_blocking(self):
-    # Placing a queen at the center and opposing pieces blocking its path.
     self.board.board[3][3] = 'wQ'
     self.board.board[3][5] = 'bP'  # Opposing piece blocking right.
     self.board.board[5][3] = 'bP'  # Opposing piece blocking down.
@@ -75,7 +70,6 @@ class TestQueenMoveGeneration(unittest.TestCase):
                             key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
   def test_queen_moves_from_edge(self):
-    # Placing a queen at the edge of the board.
     self.board.board[0][0] = 'wQ'
     expected_moves = [
       Move(0, 0, 1, 0), Move(0, 0, 2, 0),
