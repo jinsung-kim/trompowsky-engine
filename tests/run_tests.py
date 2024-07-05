@@ -1,5 +1,6 @@
 import unittest
 
+from TestPawnMoveGeneration import TestPawnMoveGeneration
 from TestRookMoveGeneration import TestRookMoveGeneration
 from TestBishopMoveGeneration import TestBishopMoveGeneration
 from TestQueenMoveGeneration import TestQueenMoveGeneration
@@ -7,6 +8,7 @@ from TestBoardMethods import TestBoardMethods
 
 if __name__ == '__main__':
   test_cases = [
+    TestPawnMoveGeneration,
     TestRookMoveGeneration,
     TestBishopMoveGeneration,
     TestQueenMoveGeneration,
