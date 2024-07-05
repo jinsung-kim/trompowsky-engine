@@ -25,8 +25,8 @@ class TestQueenMoveGeneration(unittest.TestCase):
     expected_moves = self.engine.generate_rook_moves(3, 3) + self.engine.generate_bishop_moves(3, 3)
     actual_moves = self.engine.generate_queen_moves(3, 3)
     # TODO: Write a proper sort.
-    self.assertEqual(sorted(actual_moves,
-                            key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
+                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
   def test_queen_moves_with_friendly_pieces_blocking(self):
     self.board.board[3][3] = 'wQ'
@@ -46,8 +46,8 @@ class TestQueenMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_queen_moves(3, 3)
-    self.assertEqual(sorted(actual_moves,
-                            key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
+                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
   def test_queen_moves_with_opposing_pieces_blocking(self):
     self.board.board[3][3] = 'wQ'
@@ -66,8 +66,8 @@ class TestQueenMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_queen_moves(3, 3)
-    self.assertEqual(sorted(actual_moves,
-                            key=lambda m: (m.ni, m.nj)), sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
+                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
   def test_queen_moves_from_edge(self):
     self.board.board[0][0] = 'wQ'

@@ -102,7 +102,22 @@ class Engine:
     return moves
 
   def generate_knight_moves(self, i, j) -> List[Move]:
-    pass
+    d = [(-2, 1), (-2, -1),
+         (-1, -2), (1, -2),
+         (2, -1), (2, 1),
+         (1, 2), (-1, 2)]
+
+    moves: List[Move] = []
+
+    for (di, dj) in d:
+      ni = i + di
+      nj = j + dj
+      if self.in_bounds(ni, nj):
+        move_maybe = self.board.return_valid_move(i, j, ni, nj)
+        if move_maybe is not None:
+          moves.append(move_maybe)
+
+    return moves
 
   def generate_king_moves(self, i, j) -> List[Move]:
     pass

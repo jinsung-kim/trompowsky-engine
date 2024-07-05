@@ -53,14 +53,13 @@ class Board:
     pass
 
   def return_valid_move(self, i, j, ni, nj) -> Optional[Move]:
+    # TODO: Should this function handle pawn promotion?
     color = self.board[j][i][0]
     oppo = 'b' if color == 'w' else 'w'
     new_pos = self.board[nj][ni]
-    # In the case a pawn gets promoted, diff the piece scores + set it to the move.
     promotion_score = 0
     if new_pos == '--':
       return Move(i, j, ni, nj, False, promotion_score)
-    # Could potentially take a piece + get a promotion score (if they are a pawn).
     elif oppo == new_pos[0]:
       return Move(i, j, ni, nj, True, promotion_score + SCORE_PIECE[new_pos[1]])
     else:
