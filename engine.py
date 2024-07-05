@@ -96,7 +96,7 @@ class Engine:
     for move in moves:
       if move.nj == promotion_row:
         # TODO: Make this support the others.
-        promotion_score = SCORE_PIECE['Q'] - SCORE_PIECE['P']
+        promotion_score = move.score + SCORE_PIECE['Q'] - SCORE_PIECE['P']
         move.score += promotion_score
 
     return moves

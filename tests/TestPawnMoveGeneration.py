@@ -31,6 +31,20 @@ class TestPawnMoveGeneration(unittest.TestCase):
     actual_moves = self.engine.generate_pawn_moves(1, 6)
     self.assertEqual(sorted(actual_moves, key=lambda m: (m.nj, m.ni)), sorted(expected_moves, key=lambda m: (m.nj, m.ni)))
 
+  def test_white_pawn_blocked(self):
+    self.board.board[6][1] = 'wP'
+    self.board.board[5][1] = 'bP'
+
+    actual_moves = self.engine.generate_pawn_moves(1, 6)
+    self.assertEqual(0, len(actual_moves))
+
+  def test_black_pawn_blocked(self):
+    self.board.board[1][1] = 'bP'
+    self.board.board[2][1] = 'wP'
+
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
+    self.assertEqual(0, len(actual_moves))
+
   def test_black_pawn_moves(self):
     self.board.board[1][1] = 'bP'
 
@@ -40,6 +54,56 @@ class TestPawnMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_pawn_moves(1, 1)
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.nj, m.ni)), sorted(expected_moves, key=lambda m: (m.nj, m.ni)))
+
+  def test_white_pawn_diagonal_moves(self):
+    self.board.board[6][1] = 'wP'
+    self.board.board[5][2] = 'bP'
+
+    expected_moves = [
+      Move(1, 6, 1, 5),
+      Move(1, 6, 1, 4),
+      Move(1, 6, 2, 5, True, SCORE_PIECE['P']),
+    ]
+
+    actual_moves = self.engine.generate_pawn_moves(1, 6)
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.nj, m.ni)), sorted(expected_moves, key=lambda m: (m.nj, m.ni)))
+
+  def test_black_pawn_diagonal_moves(self):
+    self.board.board[1][1] = 'bP'
+    self.board.board[2][0] = 'wP'
+
+    expected_moves = [
+      Move(1, 1, 1, 2),
+      Move(1, 1, 1, 3),
+      Move(1, 1, 0, 2, True, SCORE_PIECE['P']),
+    ]
+
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.nj, m.ni)), sorted(expected_moves, key=lambda m: (m.nj, m.ni)))
+
+  def test_white_pawn_promotion_moves(self):
+    self.board.board[1][1] = 'wP'
+    self.board.board[0][0] = 'bP'
+    self.board.board[0][1] = 'bP'
+
+    expected_moves = [
+      Move(1, 1, 0, 0, True, SCORE_PIECE['Q'] + SCORE_PIECE['P'])
+    ]
+
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.nj, m.ni)), sorted(expected_moves, key=lambda m: (m.nj, m.ni)))
+
+  def test_black_pawn_promotion_moves(self):
+    self.board.board[6][1] = 'bP'
+    self.board.board[7][1] = 'wP'
+    self.board.board[7][2] = 'wP'
+
+    expected_moves = [
+      Move(1, 6, 2, 7, True, SCORE_PIECE['Q'] + SCORE_PIECE['P'])
+    ]
+
+    actual_moves = self.engine.generate_pawn_moves(1, 6)
     self.assertEqual(sorted(actual_moves, key=lambda m: (m.nj, m.ni)), sorted(expected_moves, key=lambda m: (m.nj, m.ni)))
 
 
