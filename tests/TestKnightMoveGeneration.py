@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move, SCORE_PIECE
+from move import Move
 
 
 class TestKnightMoveGeneration(unittest.TestCase):
@@ -39,7 +39,16 @@ class TestKnightMoveGeneration(unittest.TestCase):
                      sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
   def test_knight_corner_moves(self):
-    pass
+    self.board.board[0][0] = 'wN'
+
+    expected_moves = [
+      Move(0, 0, 2, 1),
+      Move(0, 0, 1, 2),
+    ]
+
+    actual_moves = self.engine.generate_knight_moves(0, 0)
+    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
+                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
 
 
 if __name__ == '__main__':

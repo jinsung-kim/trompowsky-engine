@@ -4,10 +4,14 @@ from TestPawnMoveGeneration import TestPawnMoveGeneration
 from TestRookMoveGeneration import TestRookMoveGeneration
 from TestBishopMoveGeneration import TestBishopMoveGeneration
 from TestQueenMoveGeneration import TestQueenMoveGeneration
+from TestKingMoveGeneration import TestKingMoveGeneration
+from TestKnightMoveGeneration import TestKnightMoveGeneration
 from TestBoardMethods import TestBoardMethods
 
 if __name__ == '__main__':
   test_cases = [
+    TestKnightMoveGeneration,
+    TestKingMoveGeneration,
     TestPawnMoveGeneration,
     TestRookMoveGeneration,
     TestBishopMoveGeneration,

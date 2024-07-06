@@ -27,6 +27,19 @@ class Engine:
       ni, nj = direction(ni, nj)
     return moves
 
+  def generate_moves_for_direction(self, i, j, d) -> List[Move]:
+    moves: List[Move] = []
+
+    for (di, dj) in d:
+      ni = i + di
+      nj = j + dj
+      if self.in_bounds(ni, nj):
+        move_maybe = self.board.return_valid_move(i, j, ni, nj)
+        if move_maybe is not None:
+          moves.append(move_maybe)
+
+    return moves
+
   def generate_rook_moves(self, i, j) -> List[Move]:
     directions = [
       lambda x, y: (x - 1, y),  # Left
@@ -107,17 +120,13 @@ class Engine:
          (2, -1), (2, 1),
          (1, 2), (-1, 2)]
 
-    moves: List[Move] = []
-
-    for (di, dj) in d:
-      ni = i + di
-      nj = j + dj
-      if self.in_bounds(ni, nj):
-        move_maybe = self.board.return_valid_move(i, j, ni, nj)
-        if move_maybe is not None:
-          moves.append(move_maybe)
-
+    moves: List[Move] = self.generate_moves_for_direction(i, j, d)
     return moves
 
   def generate_king_moves(self, i, j) -> List[Move]:
-    pass
+    d = [(-1, 1), (1, -1), (1, 0), (0, 1),
+         (-1, 0), (0, -1), (1, 1), (-1, -1)]
+
+    moves: List[Move] = self.generate_moves_for_direction(i, j, d)
+    # TODO: Make sure each move does not jeopardize the king.
+    return moves
