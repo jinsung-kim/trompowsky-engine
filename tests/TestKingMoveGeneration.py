@@ -9,6 +9,7 @@ sys.path.append(parent_dir)
 from board import Board
 from engine import Engine
 from move import Move
+from helpers import sort_moves
 
 
 class TestKingMoveGeneration(unittest.TestCase):
@@ -35,8 +36,8 @@ class TestKingMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_king_moves(3, 3)
-    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
-                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
 
   def test_king_in_corner(self):
     self.board.board[0][0] = 'wK'
@@ -48,8 +49,8 @@ class TestKingMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_king_moves(0, 0)
-    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
-                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
 
   def test_king_with_friendly_blocking(self):
     self.board.board[3][3] = 'wK'
@@ -66,8 +67,8 @@ class TestKingMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_king_moves(3, 3)
-    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
-                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
 
 
 if __name__ == '__main__':

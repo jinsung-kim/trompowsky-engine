@@ -9,6 +9,7 @@ sys.path.append(parent_dir)
 from board import Board
 from engine import Engine
 from move import Move, SCORE_PIECE
+from helpers import sort_moves
 
 
 class TestBishopMoveGeneration(unittest.TestCase):
@@ -32,8 +33,8 @@ class TestBishopMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_bishop_moves(3, 3)
-    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
-                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
 
   def test_bishop_moves_with_friendly_pieces_blocking(self):
     self.board.board[3][3] = 'wB'
@@ -50,8 +51,8 @@ class TestBishopMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_bishop_moves(3, 3)
-    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
-                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
 
   def test_bishop_moves_with_opposing_pieces_blocking(self):
     self.board.board[3][3] = 'wB'
@@ -70,8 +71,8 @@ class TestBishopMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_bishop_moves(3, 3)
-    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
-                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
 
   def test_bishop_moves_from_edge(self):
     self.board.board[0][0] = 'wB'
@@ -87,8 +88,8 @@ class TestBishopMoveGeneration(unittest.TestCase):
     ]
 
     actual_moves = self.engine.generate_bishop_moves(0, 0)
-    self.assertEqual(sorted(actual_moves, key=lambda m: (m.ni, m.nj)),
-                     sorted(expected_moves, key=lambda m: (m.ni, m.nj)))
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
 
 
 if __name__ == '__main__':
