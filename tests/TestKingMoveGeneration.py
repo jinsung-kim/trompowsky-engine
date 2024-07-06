@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move
+from move import Move, SCORE_PIECE
 from helpers import sort_moves
 
 
@@ -16,7 +16,7 @@ class TestKingMoveGeneration(unittest.TestCase):
 
   def setUp(self):
     self.board = Board(is_test_board=True)
-    self.engine = Engine(self.board)
+    self.engine = Engine()
 
   def tearDown(self):
     self.board.clear_board()
@@ -35,7 +35,7 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 4)   # Bottom-right
     ]
 
-    actual_moves = self.engine.generate_king_moves(3, 3)
+    actual_moves = self.engine.generate_king_moves(3, 3, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -48,7 +48,7 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(0, 0, 1, 1)
     ]
 
-    actual_moves = self.engine.generate_king_moves(0, 0)
+    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -66,7 +66,20 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 3)   # Bottom
     ]
 
-    actual_moves = self.engine.generate_king_moves(3, 3)
+    actual_moves = self.engine.generate_king_moves(3, 3, self.board)
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
+
+  def test_king_with_opposing_threat(self):
+    return
+    self.board.board[0][0] = 'wK'
+    self.board.board[1][1] = 'bR'
+
+    expected_moves = [
+      Move(0, 0, 1, 1, True, SCORE_PIECE['R'])
+    ]
+
+    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 

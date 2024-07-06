@@ -16,14 +16,14 @@ class TestRookMoveGeneration(unittest.TestCase):
 
   def setUp(self):
     self.board = Board(is_test_board=True)
-    self.engine = Engine(self.board)
+    self.engine = Engine()
 
   def tearDown(self):
     self.board.clear_board()
 
   def test_rook_moves_from_center(self):
     self.board.board[3][3] = 'wR'
-    actual_moves = self.engine.generate_rook_moves(3, 3)
+    actual_moves = self.engine.generate_rook_moves(3, 3, self.board)
     expected_moves = [
       Move(3, 3, 2, 3),
       Move(3, 3, 1, 3),
@@ -56,7 +56,7 @@ class TestRookMoveGeneration(unittest.TestCase):
       Move(3, 3, 3, 4),  # Down up to friendly piece
     ]
 
-    actual_moves = self.engine.generate_rook_moves(3, 3)
+    actual_moves = self.engine.generate_rook_moves(3, 3, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -72,7 +72,7 @@ class TestRookMoveGeneration(unittest.TestCase):
       Move(3, 3, 3, 4),  Move(3, 3, 3, 5, True, SCORE_PIECE['P'])  # Down up to enemy piece.
     ]
 
-    actual_moves = self.engine.generate_rook_moves(3, 3)
+    actual_moves = self.engine.generate_rook_moves(3, 3, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -90,7 +90,7 @@ class TestRookMoveGeneration(unittest.TestCase):
       Move(0, 0, 0, 7),  # Down
     ]
 
-    actual_moves = self.engine.generate_rook_moves(0, 0)
+    actual_moves = self.engine.generate_rook_moves(0, 0, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 

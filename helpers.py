@@ -9,3 +9,7 @@ def truncate(f, n):
 
 def sort_moves(moves: List[Move]) -> List[Move]:
   return sorted(moves, key=lambda m: (m.ni, m.nj))
+
+
+def get_opposite_color(color: str) -> str:
+  return 'b' if color == 'w' else 'w'

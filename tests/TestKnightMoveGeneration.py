@@ -16,7 +16,7 @@ class TestKnightMoveGeneration(unittest.TestCase):
 
   def setUp(self):
     self.board = Board(is_test_board=True)
-    self.engine = Engine(self.board)
+    self.engine = Engine()
 
   def tearDown(self):
     self.board.clear_board()
@@ -35,7 +35,7 @@ class TestKnightMoveGeneration(unittest.TestCase):
       Move(3, 3, 5, 4)   # Down-right
     ]
 
-    actual_moves = self.engine.generate_knight_moves(3, 3)
+    actual_moves = self.engine.generate_knight_moves(3, 3, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -47,7 +47,7 @@ class TestKnightMoveGeneration(unittest.TestCase):
       Move(0, 0, 1, 2),
     ]
 
-    actual_moves = self.engine.generate_knight_moves(0, 0)
+    actual_moves = self.engine.generate_knight_moves(0, 0, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
