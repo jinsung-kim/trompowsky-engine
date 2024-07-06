@@ -71,7 +71,6 @@ class TestKingMoveGeneration(unittest.TestCase):
                      sort_moves(expected_moves))
 
   def test_king_with_opposing_threat(self):
-    return
     self.board.board[0][0] = 'wK'
     self.board.board[1][1] = 'bR'
 
@@ -79,6 +78,18 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(0, 0, 1, 1, True, SCORE_PIECE['R'])
     ]
 
+    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    self.assertEqual(sort_moves(actual_moves),
+                     sort_moves(expected_moves))
+
+  def test_king_with_opposing_pawn_threat(self):
+    self.board.board[0][0] = 'bK'
+    self.board.board[1][2] = 'wP'
+
+    expected_moves = [
+      Move(0, 0, 0, 1),
+      Move(0, 0, 1, 1)
+    ]
     actual_moves = self.engine.generate_king_moves(0, 0, self.board)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))

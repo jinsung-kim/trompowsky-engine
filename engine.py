@@ -105,7 +105,6 @@ class Engine:
       nj = j + direction
 
       if self.in_bounds(ni, nj) and oppo == board.board[nj][ni][0]:
-        # TODO: Support potential moves.
         score: int = SCORE_PIECE[board.board[nj][ni][1]]
         moves.append(Move(i, j, ni, nj, True, score))
 
@@ -135,13 +134,14 @@ class Engine:
 
     moves: List[Move] = self.generate_moves_for_direction(i, j, d, board)
 
-    return [move for move in moves if not self.is_position_attacked(move, oppo, board, check_king=False)]
+    # TODO: There's an infinite recursion loop here. Fix it.
+    return [move for move in moves if not self.is_position_attacked(move, oppo, board)]
 
   def generate_ai_moves(self):
     pass
 
-  def generate_potential_moves(self, i, j, board: Board, check_king: bool = True) -> List[Move]:
-    piece = board.board[j][i]
+  def generate_potential_moves(self, i, j, board: Board) -> List[Move]:
+    piece = board.board[j][i][1]
     if piece == 'P':
       return self.generate_pawn_moves(i, j, board)
     elif piece == 'R':
@@ -152,23 +152,29 @@ class Engine:
       return self.generate_bishop_moves(i, j, board)
     elif piece == 'Q':
       return self.generate_queen_moves(i, j, board)
-    elif piece == 'K' and check_king:
+    elif piece == 'K':
       return self.generate_king_moves(i, j, board)
     return []
 
-  def is_position_attacked(self, move: Move, oppo: str, board: Board, check_king: bool = True) -> bool:
+  def is_position_attacked(self, move: Move, oppo: str, board: Board) -> bool:
     # TODO: Make sure each move does not jeopardize the king.
     # TODO: Optimize this so that we aren't generating the whole list of moves before checking.
 
-    potential_move_board = deepcopy(board.board)
+    # The p_board is the potential board if the move passed in was executed.
+    # TODO: A helper function for this swap below.
+    p_board: Board = deepcopy(board)
     curr = board.board[move.j][move.i]
-    potential_move_board[move.j][move.i] = '--'
-    potential_move_board[move.nj][move.ni] = curr
+    p_board.board[move.j][move.i] = '--'
+    p_board.board[move.nj][move.ni] = curr
 
     opposing_moves: List[Move] = []
     for ci in range(8):
       for cj in range(8):
-        if board.board[cj][ci][0] == oppo:
-          opposing_moves.extend(self.generate_potential_moves(ci, cj, board, check_king))
+        if p_board.board[cj][ci][0] == oppo:
+          opposing_moves.extend(self.generate_potential_moves(ci, cj, p_board))
+
+    for p_move in opposing_moves:
+      if p_move.ni == move.ni and p_move.nj == move.nj:
+        return True
 
     return False
