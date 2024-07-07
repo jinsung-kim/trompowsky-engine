@@ -218,8 +218,8 @@ class Engine:
             enemy_piece_color = c_piece[0]
             is_rook_check = (0 <= i <= 3 and enemy_piece_type == 'R')
             is_bishop_check = (4 <= i <= 7 and enemy_piece_type == 'B')
-            is_pawn_check = (i == 1 and enemy_piece_type == 'P' and (
-              (enemy_piece_color == 'w' and 4 <= i <= 5) or (enemy_piece_color == 'b' and 6 <= i <= 7)
+            is_pawn_check = (mult == 1 and enemy_piece_type == 'P' and (
+              (enemy_piece_color == 'w' and 6 <= i <= 7) or (enemy_piece_color == 'b' and 4 <= i <= 5)
             ))
             is_queen_check = enemy_piece_type == 'Q'
             is_king_check = (enemy_piece_type == 'K' and mult == 1)
