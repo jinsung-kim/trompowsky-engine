@@ -99,7 +99,6 @@ class Engine:
       if j == start_row and board.board[nj][i] == '--':
         moves.append(Move(i, j, i, nj))
 
-    # Check for valid diagonal attacks.
     for di in [-1, 1]:
       ni = i + di
       nj = j + direction

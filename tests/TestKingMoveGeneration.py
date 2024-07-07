@@ -94,6 +94,14 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
+  def test_king_stalemate(self):
+    self.board.board[0][0] = 'bK'
+    self.board.board[1][1] = 'wR'
+    self.board.board[2][2] = 'wP'
+
+    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    self.assertEqual(len(actual_moves), 0)
+
 
 if __name__ == '__main__':
   unittest.main()
