@@ -3,6 +3,20 @@ from typing import List
 from move import Move
 
 
+class Movement:
+  Knight = [(-2, 1), (-2, -1),
+            (-1, -2), (1, -2),
+            (2, -1), (2, 1),
+            (1, 2), (-1, 2)]
+
+  # Note: First four are orthogonal. Last four are diagonal. The order does matter.
+  # This is critical to understand the pin/check logic function.
+  King = [(1, 0), (0, 1),
+          (-1, 0), (0, -1),
+          (-1, -1), (-1, 1),
+          (1, -1), (1, 1)]
+
+
 def truncate(f, n):
   return math.floor(f * 10 ** n / 10 ** n)
 

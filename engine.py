@@ -1,27 +1,56 @@
 from copy import deepcopy
 
 from board import Board
-from typing import List, Callable, Tuple
-
-from helpers import get_opposite_color
-from move import Move, SCORE_PIECE
+from typing import List, Callable, Tuple, Optional
+from helpers import get_opposite_color, Movement
+from move import Move, SCORE_PIECE, MoveBlockVector
 
 
 class Engine:
 
   def __init__(self) -> None:
-    self.ai_move = False
+    self.move_functions = {
+      'P': self.generate_pawn_moves,
+      'N': self.generate_knight_moves,
+      'R': self.generate_rook_moves,
+      'K': self.generate_king_moves,
+      'Q': self.generate_queen_moves,
+      'B': self.generate_bishop_moves,
+    }
+
+    # Location Format: (i, j).
+    # Must be up-to-date.
+    self.wk_pos = (4, 7)
+    self.bk_pos = (4, 0)
+
+    self.in_check = False
+    self.pins: List[Move] = []
+    self.checks: List[Move] = []
 
   @staticmethod
   def in_bounds(i: int, j: int) -> bool:
     return 0 <= i < 8 and 0 <= j < 8
+
+  @staticmethod
+  def return_valid_move(i, j, ni, nj, board: Board) -> Optional[Move]:
+    # TODO: Should this function handle pawn promotion?
+    color = board.board[j][i][0]
+    oppo = 'b' if color == 'w' else 'w'
+    new_pos = board.board[nj][ni]
+    promotion_score = 0
+    if new_pos == '--':
+      return Move(i, j, ni, nj, False, promotion_score)
+    elif oppo == new_pos[0]:
+      return Move(i, j, ni, nj, True, promotion_score + SCORE_PIECE[new_pos[1]])
+    else:
+      return None
 
   def generate_moves_in_direction(self, i: int, j: int,
                                   direction: Callable[[int, int], Tuple[int, int]], board: Board) -> List[Move]:
     moves: List[Move] = []
     ni, nj = direction(i, j)
     while self.in_bounds(ni, nj):
-      move_maybe = board.return_valid_move(i, j, ni, nj)
+      move_maybe = self.return_valid_move(i, j, ni, nj, board)
       if move_maybe is not None:
         moves.append(move_maybe)
         if move_maybe.is_capture_move:
@@ -38,7 +67,7 @@ class Engine:
       ni = i + di
       nj = j + dj
       if self.in_bounds(ni, nj):
-        move_maybe = board.return_valid_move(i, j, ni, nj)
+        move_maybe = self.return_valid_move(i, j, ni, nj, board)
         if move_maybe is not None:
           moves.append(move_maybe)
 
@@ -117,63 +146,106 @@ class Engine:
     return moves
 
   def generate_knight_moves(self, i, j, board: Board) -> List[Move]:
-    d = [(-2, 1), (-2, -1),
-         (-1, -2), (1, -2),
-         (2, -1), (2, 1),
-         (1, 2), (-1, 2)]
-
-    moves: List[Move] = self.generate_moves_for_direction(i, j, d, board)
+    moves: List[Move] = self.generate_moves_for_direction(i, j, Movement.Knight, board)
     return moves
 
   def generate_king_moves(self, i, j, board: Board) -> List[Move]:
-    d = [(-1, 1), (1, -1), (1, 0), (0, 1),
-         (-1, 0), (0, -1), (1, 1), (-1, -1)]
-    color = board.board[j][i][0]
-    oppo = get_opposite_color(color)
+    c = board.board[j][i][0]
 
-    moves: List[Move] = self.generate_moves_for_direction(i, j, d, board)
+    moves: List[Move] = self.generate_moves_for_direction(i, j, Movement.King, board)
+    valid_moves: List[Move] = []
+    for move in moves:
+      if c == 'w':
+        self.wk_pos = (move.ni, move.nj)
+      else:
+        self.bk_pos = (move.ni, move.nj)
 
-    # TODO: There's an infinite recursion loop here. Fix it.
-    return [move for move in moves if not self.is_position_attacked(move, oppo, board)]
+      in_check, _, _ = self.get_checks_and_pins(board, c)
 
-  def generate_ai_moves(self):
+      if not in_check:
+        valid_moves.append(move)
+
+      if c == 'w':
+        self.wk_pos = (move.i, move.j)
+      else:
+        self.bk_pos = (move.i, move.j)
+
+    return valid_moves
+
+  def generate_all_moves(self, board: Board, c: str) -> List[Move]:
+    """
+    Generates all possible moves without considering checks for a color.
+    """
+    moves: List[Move] = []
+
+    for i in range(8):
+      for j in range(8):
+        piece = board.board[j][i]
+        if piece[0] == c:
+          moves.extend(self.move_functions[piece[1]](i, j, board))
+
+    return moves
+
+  def generate_valid_moves(self, board: Board, c: str) -> List[Move]:
     pass
 
-  def generate_potential_moves(self, i, j, board: Board) -> List[Move]:
-    piece = board.board[j][i][1]
-    if piece == 'P':
-      return self.generate_pawn_moves(i, j, board)
-    elif piece == 'R':
-      return self.generate_rook_moves(i, j, board)
-    elif piece == 'N':
-      return self.generate_knight_moves(i, j, board)
-    elif piece == 'B':
-      return self.generate_bishop_moves(i, j, board)
-    elif piece == 'Q':
-      return self.generate_queen_moves(i, j, board)
-    elif piece == 'K':
-      return self.generate_king_moves(i, j, board)
-    return []
+  def get_checks_and_pins(self, board: Board, c: str) -> Tuple[bool, List[MoveBlockVector], List[MoveBlockVector]]:
+    """
+    Returns pins and checks of the board provided.
+    :returns: (in_check, checks, pins)
+    """
+    pins: List[MoveBlockVector] = []
+    checks: List[MoveBlockVector] = []
+    in_check = False
 
-  def is_position_attacked(self, move: Move, oppo: str, board: Board) -> bool:
-    # TODO: Make sure each move does not jeopardize the king.
-    # TODO: Optimize this so that we aren't generating the whole list of moves before checking.
+    oppo = get_opposite_color(c)
+    start_pos = self.wk_pos if c == 'w' else self.bk_pos
+    for i in range(len(Movement.King)):
+      d = Movement.King[i]
+      possible_pin = None
+      for mult in range(1, 8):
+        ci = start_pos[0] + d[0] * mult
+        cj = start_pos[1] + d[1] * mult
+        if self.in_bounds(ci, cj):
+          c_piece = board.board[cj][ci]
+          if c_piece[0] == c and c_piece[1] != 'K':
+            if possible_pin is None:
+              possible_pin = MoveBlockVector(ci, cj, d)
+            else:
+              break
+          elif c_piece[0] == oppo:
+            enemy_piece_type = c_piece[1]
+            enemy_piece_color = c_piece[0]
+            is_rook_check = (0 <= i <= 3 and enemy_piece_type == 'R')
+            is_bishop_check = (4 <= i <= 7 and enemy_piece_type == 'B')
+            is_pawn_check = (i == 1 and enemy_piece_type == 'P' and (
+              (enemy_piece_color == 'w' and 4 <= i <= 5) or (enemy_piece_color == 'b' and 6 <= i <= 7)
+            ))
+            is_queen_check = enemy_piece_type == 'Q'
+            is_king_check = (enemy_piece_type == 'K' and mult == 1)
 
-    # The p_board is the potential board if the move passed in was executed.
-    # TODO: A helper function for this swap below.
-    p_board: Board = deepcopy(board)
-    curr = board.board[move.j][move.i]
-    p_board.board[move.j][move.i] = '--'
-    p_board.board[move.nj][move.ni] = curr
+            if any([is_rook_check, is_queen_check, is_bishop_check, is_pawn_check, is_king_check]):
+              if possible_pin is None:
+                in_check = True
+                checks.append(MoveBlockVector(ci, cj, d))
+                # No need to check further from this direction.
+                break
+              else:
+                pins.append(possible_pin)
+                break
+            # Enemy is not applying checks.
+            else:
+              break
+        # Off the board.
+        else:
+          break
 
-    opposing_moves: List[Move] = []
-    for ci in range(8):
-      for cj in range(8):
-        if p_board.board[cj][ci][0] == oppo:
-          opposing_moves.extend(self.generate_potential_moves(ci, cj, p_board))
+    for move in Movement.Knight:
+      ci, cj = start_pos[0] + move[0], start_pos[1] + move[1]
+      if self.in_bounds(ci, cj):
+        c_piece = board.board[cj][ci]
+        if c_piece[0] == oppo and c_piece[1] == 'N':
+          in_check = True
+          checks.append(MoveBlockVector(ci, cj, move))
 
-    for p_move in opposing_moves:
-      if p_move.ni == move.ni and p_move.nj == move.nj:
-        return True
-
-    return False
+    return in_check, checks, pins

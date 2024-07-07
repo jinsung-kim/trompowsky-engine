@@ -1,3 +1,5 @@
+from typing import Tuple
+
 SCORE_PIECE = {
   'K': 900,
   'Q': 90,
@@ -22,3 +24,11 @@ class Move:
       return NotImplemented
     return (self.i, self.j, self.ni, self.nj, self.is_capture_move, self.score) == \
       (other.i, other.j, other.ni, other.nj, other.is_capture_move, other.score)
+
+  # TODO: Write chess notation logs.
+
+
+class MoveBlockVector:
+
+  def __init__(self, i, j, d: Tuple[int, int]):
+    self.i, self.j, self.d = i, j, d

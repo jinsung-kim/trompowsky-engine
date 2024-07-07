@@ -27,13 +27,8 @@ class TestBoardMethods(unittest.TestCase):
     self.assertEqual(self.board.board, EMPTY_BOARD)
 
   def test_initial_move_generation(self):
-    moves: List[Move] = []
+    moves: List[Move] = self.engine.generate_all_moves(self.board, 'w')
 
-    for i in range(8):
-      for j in range(8):
-        if self.board.board[j][i][0] == 'w':
-          moves.extend(self.engine.generate_potential_moves(i, j, self.board))
-          
     # Only twenty ways to begin a match.
     self.assertEqual(len(moves), 20)
 

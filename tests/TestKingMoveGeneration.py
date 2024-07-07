@@ -73,6 +73,7 @@ class TestKingMoveGeneration(unittest.TestCase):
   def test_king_with_opposing_threat(self):
     self.board.board[0][0] = 'wK'
     self.board.board[1][1] = 'bR'
+    self.engine.wk_pos = (0, 0)
 
     expected_moves = [
       Move(0, 0, 1, 1, True, SCORE_PIECE['R'])
