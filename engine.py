@@ -53,7 +53,12 @@ class Engine:
     g = gcd(abs(di), abs(dj))
     return di // g, dj // g
 
-  def generate_valid_moves_for_piece(self, i, j, board: Board, directions, is_queen: bool) -> List[Move]:
+  def find_pin(self, i, j, is_queen: bool) -> Optional[MoveBlockVector]:
+    """
+    Finds and returns (if applicable) the first pin for the position.
+    NOTE: Will also remove the pin (assuming that the move generation will handle it).
+
+    """
     pin: Optional[MoveBlockVector] = None
 
     for pinned_vector in self.pins[::-1]:
@@ -64,6 +69,10 @@ class Engine:
         if not is_queen:
           self.pins.remove(pinned_vector)
         break
+    return pin
+
+  def generate_valid_moves_for_piece(self, i, j, board: Board, directions, is_queen: bool) -> List[Move]:
+    pin: Optional[MoveBlockVector] = self.find_pin(i, j, is_queen)
 
     moves: List[Move] = []
     for direction in directions:
@@ -135,6 +144,7 @@ class Engine:
 
   def generate_pawn_moves(self, i, j, board: Board) -> List[Move]:
     moves: List[Move] = []
+    pin: Optional[MoveBlockVector] = self.find_pin(i, j, False)
 
     color = board.board[j][i][0]
     oppo = get_opposite_color(color)
@@ -151,18 +161,18 @@ class Engine:
     # Pawns can move up/down two squares if they are on the starting row.
     nj = j + direction
 
-    if 0 <= nj < 8 and board.board[nj][i] == '--':
+    if 0 <= nj < 8 and board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
       moves.append(Move(i, j, i, nj))
 
       nj += direction
-      if j == start_row and board.board[nj][i] == '--':
+      if j == start_row and board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
         moves.append(Move(i, j, i, nj))
 
     for di in [-1, 1]:
       ni = i + di
       nj = j + direction
 
-      if self.in_bounds(ni, nj) and oppo == board.board[nj][ni][0]:
+      if self.in_bounds(ni, nj) and oppo == board.board[nj][ni][0] and (pin is None or pin.d == (di, direction)):
         score: int = SCORE_PIECE[board.board[nj][ni][1]]
         moves.append(Move(i, j, ni, nj, True, score))
 
@@ -274,7 +284,6 @@ class Engine:
             # Enemy is not applying checks.
             else:
               break
-        # Off the board.
         else:
           break
 
