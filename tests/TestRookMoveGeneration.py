@@ -94,6 +94,19 @@ class TestRookMoveGeneration(unittest.TestCase):
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
+  def test_rook_capture_while_pinned(self):
+   self.board.board[0][0] = 'wK'
+   self.board.board[0][1] = 'wR'
+   self.board.board[0][2] = 'bQ'
+   self.engine.wk_pos = (0, 0)
+
+   _, _, self.engine.pins = self.engine.get_checks_and_pins(self.board, 'w')
+   # Pinned by queen on the right.
+   self.assertEquals(len(self.engine.pins), 1)
+
+   actual_moves = self.engine.generate_rook_moves(1, 0, self.board)
+   self.assertEqual(len(actual_moves), 1)
+
 
 if __name__ == '__main__':
   unittest.main()

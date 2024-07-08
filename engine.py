@@ -1,9 +1,8 @@
-from copy import deepcopy
-
 from board import Board
 from typing import List, Callable, Tuple, Optional
 from helpers import get_opposite_color, Movement
 from move import Move, SCORE_PIECE, MoveBlockVector
+from math import gcd
 
 
 class Engine:
@@ -24,8 +23,8 @@ class Engine:
     self.bk_pos = (4, 0)
 
     self.in_check = False
-    self.pins: List[Move] = []
-    self.checks: List[Move] = []
+    self.pins: List[MoveBlockVector] = []
+    self.checks: List[MoveBlockVector] = []
 
   @staticmethod
   def in_bounds(i: int, j: int) -> bool:
@@ -44,6 +43,43 @@ class Engine:
       return Move(i, j, ni, nj, True, promotion_score + SCORE_PIECE[new_pos[1]])
     else:
       return None
+
+  @staticmethod
+  def infer_direction(move: Move) -> Tuple[int, int]:
+    di = move.ni - move.i
+    dj = move.nj - move.j
+
+    # Normalize the direction by dividing by the GCD of di and dj.
+    g = gcd(abs(di), abs(dj))
+    return di // g, dj // g
+
+  def generate_valid_moves_for_piece(self, i, j, board: Board, directions, is_queen: bool) -> List[Move]:
+    pin: Optional[MoveBlockVector] = None
+
+    for pinned_vector in self.pins[::-1]:
+      if i == pinned_vector.i and j == pinned_vector.j:
+        pin = pinned_vector
+        # Since the queen calls both rook + bishop move generation functions, only allow the bishop move generator
+        # to remove pins. This avoids situations where the engine believes the queen is no longer pinned, when it's not.
+        if not is_queen:
+          self.pins.remove(pinned_vector)
+        break
+
+    moves: List[Move] = []
+    for direction in directions:
+      moves.extend(self.generate_moves_in_direction(i, j, direction, board))
+
+    if pin is None:
+      return moves
+
+    valid_moves: List[Move] = []
+    for move in moves:
+      move_d = self.infer_direction(move)
+
+      if move_d == pin.d or tuple(d * -1 for d in pin.d) == move_d:
+        valid_moves.append(move)
+
+    return valid_moves
 
   def generate_moves_in_direction(self, i: int, j: int,
                                   direction: Callable[[int, int], Tuple[int, int]], board: Board) -> List[Move]:
@@ -80,12 +116,9 @@ class Engine:
       lambda x, y: (x, y - 1),  # Up
       lambda x, y: (x, y + 1)  # Down
     ]
+    is_queen = board.board[j][i][1] == 'Q'
 
-    moves: List[Move] = []
-    for direction in directions:
-      moves.extend(self.generate_moves_in_direction(i, j, direction, board))
-
-    return moves
+    return self.generate_valid_moves_for_piece(i, j, board, directions, is_queen)
 
   def generate_bishop_moves(self, i, j, board: Board) -> List[Move]:
     directions = [
@@ -95,10 +128,7 @@ class Engine:
       lambda x, y: (x + 1, y + 1)  # Bottom right
     ]
 
-    moves: List[Move] = []
-    for direction in directions:
-      moves.extend(self.generate_moves_in_direction(i, j, direction, board))
-    return moves
+    return self.generate_valid_moves_for_piece(i, j, board, directions, False)
 
   def generate_queen_moves(self, i, j, board: Board) -> List[Move]:
     return self.generate_rook_moves(i, j, board) + self.generate_bishop_moves(i, j, board)

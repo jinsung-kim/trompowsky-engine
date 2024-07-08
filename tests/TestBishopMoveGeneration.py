@@ -91,6 +91,20 @@ class TestBishopMoveGeneration(unittest.TestCase):
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
+  def test_king_bishop_pinned(self):
+    self.board.board[0][0] = 'bK'
+    self.board.board[0][1] = 'bB'
+    # Pinning bishop.
+    self.board.board[0][5] = 'wR'
+    self.engine.bk_pos = (0, 0)
+
+    _, _, self.engine.pins = self.engine.get_checks_and_pins(self.board, 'b')
+    # Pin from the top right.
+    self.assertEqual(len(self.engine.pins), 1)
+
+    actual_moves = self.engine.generate_bishop_moves(1, 0, self.board)
+    self.assertEqual(len(actual_moves), 0)
+
 
 if __name__ == '__main__':
   unittest.main()
