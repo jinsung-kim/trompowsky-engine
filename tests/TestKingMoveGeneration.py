@@ -105,6 +105,26 @@ class TestKingMoveGeneration(unittest.TestCase):
     actual_moves = self.engine.generate_king_moves(0, 0, self.board)
     self.assertEqual(len(actual_moves), 0)
 
+  def test_two_kings(self):
+    self.board.board[0][0] = 'bK'
+    self.board.board[3][3] = 'wK'
+
+    self.engine.bk_pos = (0, 0)
+    self.engine.wk_pos = (0, 0)
+
+    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    self.assertEqual(len(actual_moves), 3)
+
+  def test_two_kings_close(self):
+    self.board.board[0][0] = 'bK'
+    self.board.board[2][1] = 'wK'
+
+    self.engine.bk_pos = (0, 0)
+    self.engine.wk_pos = (1, 2)
+
+    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    self.assertEqual(len(actual_moves), 1)
+
 
 if __name__ == '__main__':
   unittest.main()
