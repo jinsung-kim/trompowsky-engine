@@ -51,6 +51,20 @@ class TestKnightMoveGeneration(unittest.TestCase):
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
+  def test_knight_pinned_moves(self):
+    self.board.board[0][0] = 'wK'
+    self.board.board[0][1] = 'wN'
+    self.board.board[0][2] = 'bR'
+
+    self.engine.wk_pos = (0, 0)
+
+    _, _, self.engine.pins = self.engine.get_checks_and_pins(self.board, 'w')
+    # Pinned by rook on the right.
+    self.assertEquals(len(self.engine.pins), 1)
+
+    actual_moves = self.engine.generate_knight_moves(1, 0, self.board)
+    self.assertEqual(len(actual_moves), 0)
+
 
 if __name__ == '__main__':
   unittest.main()

@@ -176,8 +176,16 @@ class Engine:
     return moves
 
   def generate_knight_moves(self, i, j, board: Board) -> List[Move]:
-    moves: List[Move] = self.generate_moves_for_direction(i, j, Movement.Knight, board)
-    return moves
+    is_pinned = False
+    for pinned_vector in self.pins[::-1]:
+      if i == pinned_vector.i and j == pinned_vector.j:
+        is_pinned = True
+        break
+
+    if is_pinned:
+      return []
+    else:
+      return self.generate_moves_for_direction(i, j, Movement.Knight, board)
 
   def generate_king_moves(self, i, j, board: Board) -> List[Move]:
     c = board.board[j][i][0]
