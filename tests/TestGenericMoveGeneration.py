@@ -7,7 +7,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-from board import Board, EMPTY_BOARD
+from board import Board
 from engine import Engine
 from move import Move
 
@@ -54,6 +54,19 @@ class TestGenericMoveGeneration(unittest.TestCase):
     actual_moves = self.engine.generate_valid_moves(self.board, 'w')
     self.assertEqual(self.engine.in_check, True)
     self.assertEqual(self.engine.checkmate, True)
+    self.assertEqual(len(actual_moves), 0)
+
+  def test_stalemate_status(self):
+    self.board.clear_board()
+    self.board.board[0][0] = 'wK'
+    self.board.board[0][1] = 'wB'
+    self.board.board[0][4] = 'bR'
+    self.board.board[1][3] = 'bR'
+    self.engine.wk_pos = (0, 0)
+
+    actual_moves = self.engine.generate_valid_moves(self.board, 'w')
+    self.assertEqual(self.engine.in_check, False)
+    self.assertEqual(self.engine.checkmate, False)
     self.assertEqual(len(actual_moves), 0)
 
 

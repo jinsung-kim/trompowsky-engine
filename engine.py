@@ -28,6 +28,7 @@ class Engine:
 
     # Game state
     self.checkmate = False
+    self.stalemate = False
 
   @staticmethod
   def in_bounds(i: int, j: int) -> bool:
@@ -258,7 +259,10 @@ class Engine:
       moves = self.generate_all_moves(board, c)
 
     if len(moves) == 0:
-      self.checkmate = True
+      if self.in_check:
+        self.checkmate = True
+      else:
+        self.stalemate = True
 
     return moves
 
