@@ -1,4 +1,4 @@
-import pygame # type: ignore
+import pygame  # type: ignore
 from gui import Gui
 from board import Board
 
@@ -18,7 +18,7 @@ if __name__ == '__main__':
       if event.type == pygame.QUIT:
         running = False
 
-    gui.update_game_state(board = board)
+    gui.update_game_state(board=board)
 
   print('Ending game.')
 

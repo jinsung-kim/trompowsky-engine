@@ -7,6 +7,7 @@ from TestQueenMoveGeneration import TestQueenMoveGeneration
 from TestKingMoveGeneration import TestKingMoveGeneration
 from TestKnightMoveGeneration import TestKnightMoveGeneration
 from TestBoardMethods import TestBoardMethods
+from TestGenericMoveGeneration import TestGenericMoveGeneration
 
 if __name__ == '__main__':
   test_cases = [
@@ -16,6 +17,7 @@ if __name__ == '__main__':
     TestRookMoveGeneration,
     TestBishopMoveGeneration,
     TestQueenMoveGeneration,
+    TestGenericMoveGeneration,
     TestBoardMethods,
   ]
 

@@ -26,6 +26,9 @@ class Engine:
     self.pins: List[MoveBlockVector] = []
     self.checks: List[MoveBlockVector] = []
 
+    # Game state
+    self.checkmate = False
+
   @staticmethod
   def in_bounds(i: int, j: int) -> bool:
     return 0 <= i < 8 and 0 <= j < 8
@@ -220,6 +223,45 @@ class Engine:
 
     return valid_moves
 
+  def generate_valid_moves(self, board: Board, c: str) -> List[Move]:
+    """
+    Returns all moves accounting for checks.
+    """
+    self.in_check, self.checks, self.pins = self.get_checks_and_pins(board, c)
+    if c == 'w':
+      k_pos = self.wk_pos
+    else:
+      k_pos = self.bk_pos
+
+    if self.in_check:
+      if len(self.checks) == 1:
+        moves = self.generate_all_moves(board, c)
+        check: MoveBlockVector = self.checks[0]
+        piece_checking = board.board[check.j][check.i]
+        valid_squares = []
+
+        if piece_checking[1] == 'N':  # If knight is checking the king, the only valid move is to capture it/run away.
+          valid_squares = [(check.i, check.j)]
+        else:
+          for i in range(1, 8):
+            valid_square = (k_pos[0] + check.d[0] * i, k_pos[1] + check.d[1] * i)
+            valid_squares.append(valid_square)
+            if valid_square[0] == check.i and valid_square[1] == check.j:
+              break
+        # Remove moves that don't block the check or move the king.
+        for move in moves[::-1]:
+          if board.board[move.j][move.i][1] != 'K' and not (move.ni, move.nj) in valid_squares:
+            moves.remove(move)
+      else:  # Double check, can only move king.
+        moves = self.generate_king_moves(k_pos[0], k_pos[1], board)
+    else:  # Not in check, any move is fair game.
+      moves = self.generate_all_moves(board, c)
+
+    if len(moves) == 0:
+      self.checkmate = True
+
+    return moves
+
   def generate_all_moves(self, board: Board, c: str) -> List[Move]:
     """
     Generates all possible moves without considering checks for a color.
@@ -233,9 +275,6 @@ class Engine:
           moves.extend(self.move_functions[piece[1]](i, j, board))
 
     return moves
-
-  def generate_valid_moves(self, board: Board, c: str) -> List[Move]:
-    pass
 
   def get_checks_and_pins(self, board: Board, c: str) -> Tuple[bool, List[MoveBlockVector], List[MoveBlockVector]]:
     """
