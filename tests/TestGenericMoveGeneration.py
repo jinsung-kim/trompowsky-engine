@@ -15,10 +15,10 @@ from move import Move
 class TestGenericMoveGeneration(unittest.TestCase):
   def setUp(self):
     self.board = Board(is_test_board=False)
-    self.engine = Engine()
+    self.engine = Engine(self.board)
 
   def test_initial_move_generation(self):
-    moves: List[Move] = self.engine.generate_all_moves(self.board, 'w')
+    moves: List[Move] = self.engine.generate_all_moves('w')
 
     # Only twenty ways to begin a match.
     self.assertEqual(len(moves), 20)

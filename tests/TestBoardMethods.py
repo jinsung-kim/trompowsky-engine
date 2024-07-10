@@ -13,7 +13,7 @@ from engine import Engine
 class TestBoardMethods(unittest.TestCase):
   def setUp(self):
    self.board = Board(is_test_board=False)
-   self.engine = Engine()
+   self.engine = Engine(self.board)
 
   def test_board_clear(self):
     self.board.board[3][3] = 'wQ'

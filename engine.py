@@ -7,7 +7,7 @@ from math import gcd
 
 class Engine:
 
-  def __init__(self, is_test_board=False) -> None:
+  def __init__(self, board: Board) -> None:
     self.move_functions = {
       'P': self.generate_pawn_moves,
       'N': self.generate_knight_moves,
@@ -16,7 +16,8 @@ class Engine:
       'Q': self.generate_queen_moves,
       'B': self.generate_bishop_moves,
     }
-    self.board: Board = Board(is_test_board)
+
+    self.board: Board = board
 
     # Location Format: (i, j).
     # Must be up-to-date.
@@ -35,12 +36,11 @@ class Engine:
   def in_bounds(i: int, j: int) -> bool:
     return 0 <= i < 8 and 0 <= j < 8
 
-  @staticmethod
-  def return_valid_move(i, j, ni, nj, board: Board) -> Optional[Move]:
+  def return_valid_move(self, i, j, ni, nj) -> Optional[Move]:
     # TODO: Should this function handle pawn promotion?
-    color = board.board[j][i][0]
+    color = self.board.board[j][i][0]
     oppo = 'b' if color == 'w' else 'w'
-    new_pos = board.board[nj][ni]
+    new_pos = self.board.board[nj][ni]
     promotion_score = 0
     if new_pos == '--':
       return Move(i, j, ni, nj, False, promotion_score)
@@ -100,7 +100,7 @@ class Engine:
     moves: List[Move] = []
     ni, nj = direction(i, j)
     while self.in_bounds(ni, nj):
-      move_maybe = self.return_valid_move(i, j, ni, nj, self.board)
+      move_maybe = self.return_valid_move(i, j, ni, nj)
       if move_maybe is not None:
         moves.append(move_maybe)
         if move_maybe.is_capture_move:
@@ -117,7 +117,7 @@ class Engine:
       ni = i + di
       nj = j + dj
       if self.in_bounds(ni, nj):
-        move_maybe = self.return_valid_move(i, j, ni, nj, self.board)
+        move_maybe = self.return_valid_move(i, j, ni, nj)
         if move_maybe is not None:
           moves.append(move_maybe)
 
@@ -277,7 +277,7 @@ class Engine:
       for j in range(8):
         piece = self.board.board[j][i]
         if piece[0] == c:
-          moves.extend(self.move_functions[piece[1]](i, j, self.board))
+          moves.extend(self.move_functions[piece[1]](i, j))
 
     return moves
 

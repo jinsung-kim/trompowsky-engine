@@ -16,7 +16,7 @@ class TestKingMoveGeneration(unittest.TestCase):
 
   def setUp(self):
     self.board = Board(is_test_board=True)
-    self.engine = Engine()
+    self.engine = Engine(self.board)
 
   def tearDown(self):
     self.board.clear_board()
