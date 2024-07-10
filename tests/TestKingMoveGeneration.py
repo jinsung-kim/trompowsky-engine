@@ -35,7 +35,7 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 4)   # Bottom-right
     ]
 
-    actual_moves = self.engine.generate_king_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_king_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -48,7 +48,7 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(0, 0, 1, 1)
     ]
 
-    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -66,7 +66,7 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 3)   # Bottom
     ]
 
-    actual_moves = self.engine.generate_king_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_king_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -79,7 +79,7 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(0, 0, 1, 1, True, SCORE_PIECE['R'])
     ]
 
-    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -92,7 +92,7 @@ class TestKingMoveGeneration(unittest.TestCase):
       Move(0, 0, 0, 1),
       Move(0, 0, 1, 1)
     ]
-    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -102,7 +102,7 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.board.board[2][2] = 'wP'
     self.engine.bk_pos = (0, 0)
 
-    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(len(actual_moves), 0)
 
   def test_two_kings(self):
@@ -112,7 +112,7 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.engine.bk_pos = (0, 0)
     self.engine.wk_pos = (0, 0)
 
-    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(len(actual_moves), 3)
 
   def test_two_kings_close(self):
@@ -122,7 +122,7 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.engine.bk_pos = (0, 0)
     self.engine.wk_pos = (1, 2)
 
-    actual_moves = self.engine.generate_king_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(len(actual_moves), 1)
 
 

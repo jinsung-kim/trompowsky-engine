@@ -7,7 +7,7 @@ from math import gcd
 
 class Engine:
 
-  def __init__(self) -> None:
+  def __init__(self, is_test_board=False) -> None:
     self.move_functions = {
       'P': self.generate_pawn_moves,
       'N': self.generate_knight_moves,
@@ -16,6 +16,7 @@ class Engine:
       'Q': self.generate_queen_moves,
       'B': self.generate_bishop_moves,
     }
+    self.board: Board = Board(is_test_board)
 
     # Location Format: (i, j).
     # Must be up-to-date.
@@ -75,12 +76,12 @@ class Engine:
         break
     return pin
 
-  def generate_valid_moves_for_piece(self, i, j, board: Board, directions, is_queen: bool) -> List[Move]:
+  def generate_valid_moves_for_piece(self, i, j, directions, is_queen: bool) -> List[Move]:
     pin: Optional[MoveBlockVector] = self.find_pin(i, j, is_queen)
 
     moves: List[Move] = []
     for direction in directions:
-      moves.extend(self.generate_moves_in_direction(i, j, direction, board))
+      moves.extend(self.generate_moves_in_direction(i, j, direction))
 
     if pin is None:
       return moves
@@ -95,11 +96,11 @@ class Engine:
     return valid_moves
 
   def generate_moves_in_direction(self, i: int, j: int,
-                                  direction: Callable[[int, int], Tuple[int, int]], board: Board) -> List[Move]:
+                                  direction: Callable[[int, int], Tuple[int, int]]) -> List[Move]:
     moves: List[Move] = []
     ni, nj = direction(i, j)
     while self.in_bounds(ni, nj):
-      move_maybe = self.return_valid_move(i, j, ni, nj, board)
+      move_maybe = self.return_valid_move(i, j, ni, nj, self.board)
       if move_maybe is not None:
         moves.append(move_maybe)
         if move_maybe.is_capture_move:
@@ -109,31 +110,31 @@ class Engine:
       ni, nj = direction(ni, nj)
     return moves
 
-  def generate_moves_for_direction(self, i, j, d, board: Board) -> List[Move]:
+  def generate_moves_for_direction(self, i, j, d) -> List[Move]:
     moves: List[Move] = []
 
     for (di, dj) in d:
       ni = i + di
       nj = j + dj
       if self.in_bounds(ni, nj):
-        move_maybe = self.return_valid_move(i, j, ni, nj, board)
+        move_maybe = self.return_valid_move(i, j, ni, nj, self.board)
         if move_maybe is not None:
           moves.append(move_maybe)
 
     return moves
 
-  def generate_rook_moves(self, i, j, board: Board) -> List[Move]:
+  def generate_rook_moves(self, i, j) -> List[Move]:
     directions = [
       lambda x, y: (x - 1, y),  # Left
       lambda x, y: (x + 1, y),  # Right
       lambda x, y: (x, y - 1),  # Up
       lambda x, y: (x, y + 1)  # Down
     ]
-    is_queen = board.board[j][i][1] == 'Q'
+    is_queen = self.board.board[j][i][1] == 'Q'
 
-    return self.generate_valid_moves_for_piece(i, j, board, directions, is_queen)
+    return self.generate_valid_moves_for_piece(i, j, directions, is_queen)
 
-  def generate_bishop_moves(self, i, j, board: Board) -> List[Move]:
+  def generate_bishop_moves(self, i, j) -> List[Move]:
     directions = [
       lambda x, y: (x - 1, y - 1),  # Top left
       lambda x, y: (x + 1, y - 1),  # Top right
@@ -141,16 +142,16 @@ class Engine:
       lambda x, y: (x + 1, y + 1)  # Bottom right
     ]
 
-    return self.generate_valid_moves_for_piece(i, j, board, directions, False)
+    return self.generate_valid_moves_for_piece(i, j, directions, False)
 
-  def generate_queen_moves(self, i, j, board: Board) -> List[Move]:
-    return self.generate_rook_moves(i, j, board) + self.generate_bishop_moves(i, j, board)
+  def generate_queen_moves(self, i, j) -> List[Move]:
+    return self.generate_rook_moves(i, j) + self.generate_bishop_moves(i, j)
 
-  def generate_pawn_moves(self, i, j, board: Board) -> List[Move]:
+  def generate_pawn_moves(self, i, j) -> List[Move]:
     moves: List[Move] = []
     pin: Optional[MoveBlockVector] = self.find_pin(i, j, False)
 
-    color = board.board[j][i][0]
+    color = self.board.board[j][i][0]
     oppo = get_opposite_color(color)
 
     if color == 'w':
@@ -165,19 +166,19 @@ class Engine:
     # Pawns can move up/down two squares if they are on the starting row.
     nj = j + direction
 
-    if 0 <= nj < 8 and board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
+    if 0 <= nj < 8 and self.board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
       moves.append(Move(i, j, i, nj))
 
       nj += direction
-      if j == start_row and board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
+      if j == start_row and self.board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
         moves.append(Move(i, j, i, nj))
 
     for di in [-1, 1]:
       ni = i + di
       nj = j + direction
 
-      if self.in_bounds(ni, nj) and oppo == board.board[nj][ni][0] and (pin is None or pin.d == (di, direction)):
-        score: int = SCORE_PIECE[board.board[nj][ni][1]]
+      if self.in_bounds(ni, nj) and oppo == self.board.board[nj][ni][0] and (pin is None or pin.d == (di, direction)):
+        score: int = SCORE_PIECE[self.board.board[nj][ni][1]]
         moves.append(Move(i, j, ni, nj, True, score))
 
     # Check for promotion to re-evaluate scores. Automatically promote to queen.
@@ -189,7 +190,7 @@ class Engine:
 
     return moves
 
-  def generate_knight_moves(self, i, j, board: Board) -> List[Move]:
+  def generate_knight_moves(self, i, j) -> List[Move]:
     is_pinned = False
     for pinned_vector in self.pins[::-1]:
       if i == pinned_vector.i and j == pinned_vector.j:
@@ -199,12 +200,12 @@ class Engine:
     if is_pinned:
       return []
     else:
-      return self.generate_moves_for_direction(i, j, Movement.Knight, board)
+      return self.generate_moves_for_direction(i, j, Movement.Knight)
 
-  def generate_king_moves(self, i, j, board: Board) -> List[Move]:
-    c = board.board[j][i][0]
+  def generate_king_moves(self, i, j) -> List[Move]:
+    c = self.board.board[j][i][0]
 
-    moves: List[Move] = self.generate_moves_for_direction(i, j, Movement.King, board)
+    moves: List[Move] = self.generate_moves_for_direction(i, j, Movement.King)
     valid_moves: List[Move] = []
     for move in moves:
       if c == 'w':
@@ -212,7 +213,7 @@ class Engine:
       else:
         self.bk_pos = (move.ni, move.nj)
 
-      in_check, _, _ = self.get_checks_and_pins(board, c)
+      in_check, _, _ = self.get_checks_and_pins(c)
 
       if not in_check:
         valid_moves.append(move)
@@ -224,11 +225,11 @@ class Engine:
 
     return valid_moves
 
-  def generate_valid_moves(self, board: Board, c: str) -> List[Move]:
+  def generate_valid_moves(self, c: str) -> List[Move]:
     """
     Returns all moves accounting for checks.
     """
-    self.in_check, self.checks, self.pins = self.get_checks_and_pins(board, c)
+    self.in_check, self.checks, self.pins = self.get_checks_and_pins(c)
     if c == 'w':
       k_pos = self.wk_pos
     else:
@@ -236,9 +237,9 @@ class Engine:
 
     if self.in_check:
       if len(self.checks) == 1:
-        moves = self.generate_all_moves(board, c)
+        moves = self.generate_all_moves(c)
         check: MoveBlockVector = self.checks[0]
-        piece_checking = board.board[check.j][check.i]
+        piece_checking = self.board.board[check.j][check.i]
         valid_squares = []
 
         if piece_checking[1] == 'N':  # If knight is checking the king, the only valid move is to capture it/run away.
@@ -251,12 +252,12 @@ class Engine:
               break
         # Remove moves that don't block the check or move the king.
         for move in moves[::-1]:
-          if board.board[move.j][move.i][1] != 'K' and not (move.ni, move.nj) in valid_squares:
+          if self.board.board[move.j][move.i][1] != 'K' and not (move.ni, move.nj) in valid_squares:
             moves.remove(move)
       else:  # Double check, can only move king.
-        moves = self.generate_king_moves(k_pos[0], k_pos[1], board)
+        moves = self.generate_king_moves(k_pos[0], k_pos[1])
     else:  # Not in check, any move is fair game.
-      moves = self.generate_all_moves(board, c)
+      moves = self.generate_all_moves(c)
 
     if len(moves) == 0:
       if self.in_check:
@@ -266,7 +267,7 @@ class Engine:
 
     return moves
 
-  def generate_all_moves(self, board: Board, c: str) -> List[Move]:
+  def generate_all_moves(self, c: str) -> List[Move]:
     """
     Generates all possible moves without considering checks for a color.
     """
@@ -274,13 +275,13 @@ class Engine:
 
     for i in range(8):
       for j in range(8):
-        piece = board.board[j][i]
+        piece = self.board.board[j][i]
         if piece[0] == c:
-          moves.extend(self.move_functions[piece[1]](i, j, board))
+          moves.extend(self.move_functions[piece[1]](i, j, self.board))
 
     return moves
 
-  def get_checks_and_pins(self, board: Board, c: str) -> Tuple[bool, List[MoveBlockVector], List[MoveBlockVector]]:
+  def get_checks_and_pins(self, c: str) -> Tuple[bool, List[MoveBlockVector], List[MoveBlockVector]]:
     """
     Returns pins and checks of the board provided.
     :returns: (in_check, checks, pins)
@@ -298,7 +299,7 @@ class Engine:
         ci = start_pos[0] + d[0] * mult
         cj = start_pos[1] + d[1] * mult
         if self.in_bounds(ci, cj):
-          c_piece = board.board[cj][ci]
+          c_piece = self.board.board[cj][ci]
           if c_piece[0] == c and c_piece[1] != 'K':
             if possible_pin is None:
               possible_pin = MoveBlockVector(ci, cj, d)
@@ -333,7 +334,7 @@ class Engine:
     for move in Movement.Knight:
       ci, cj = start_pos[0] + move[0], start_pos[1] + move[1]
       if self.in_bounds(ci, cj):
-        c_piece = board.board[cj][ci]
+        c_piece = self.board.board[cj][ci]
         if c_piece[0] == oppo and c_piece[1] == 'N':
           in_check = True
           checks.append(MoveBlockVector(ci, cj, move))

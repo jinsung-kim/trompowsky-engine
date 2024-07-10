@@ -23,9 +23,9 @@ class TestQueenMoveGeneration(unittest.TestCase):
 
   def test_queen_moves_from_center(self):
     self.board.board[3][3] = 'wQ'
-    expected_moves = (self.engine.generate_rook_moves(3, 3, self.board) +
-                      self.engine.generate_bishop_moves(3, 3, self.board))
-    actual_moves = self.engine.generate_queen_moves(3, 3, self.board)
+    expected_moves = (self.engine.generate_rook_moves(3, 3) +
+                      self.engine.generate_bishop_moves(3, 3))
+    actual_moves = self.engine.generate_queen_moves(3, 3)
     # TODO: Write a proper sort.
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
@@ -47,7 +47,7 @@ class TestQueenMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 2), Move(3, 3, 5, 1), Move(3, 3, 6, 0)  # Top-right
     ]
 
-    actual_moves = self.engine.generate_queen_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_queen_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -67,7 +67,7 @@ class TestQueenMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 2), Move(3, 3, 5, 1), Move(3, 3, 6, 0)  # Top-right
     ]
 
-    actual_moves = self.engine.generate_queen_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_queen_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -88,7 +88,7 @@ class TestQueenMoveGeneration(unittest.TestCase):
       Move(0, 0, 7, 7)  # Bottom-right
     ]
 
-    actual_moves = self.engine.generate_queen_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_queen_moves(0, 0)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -98,11 +98,11 @@ class TestQueenMoveGeneration(unittest.TestCase):
     self.board.board[0][2] = 'bQ'
     self.engine.wk_pos = (0, 0)
 
-    _, _, self.engine.pins = self.engine.get_checks_and_pins(self.board, 'w')
+    _, _, self.engine.pins = self.engine.get_checks_and_pins('w')
     # Pinned by queen on the right.
     self.assertEquals(len(self.engine.pins), 1)
 
-    actual_moves = self.engine.generate_queen_moves(1, 0, self.board)
+    actual_moves = self.engine.generate_queen_moves(1, 0)
     self.assertEqual(len(actual_moves), 1)
 
 

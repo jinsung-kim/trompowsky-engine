@@ -39,7 +39,7 @@ class TestGenericMoveGeneration(unittest.TestCase):
       self.assertEqual(self.engine.infer_direction(move), expected)
 
   def test_valid_move_generation(self):
-    moves: List[Move] = self.engine.generate_valid_moves(self.board, 'w')
+    moves: List[Move] = self.engine.generate_valid_moves('w')
 
     # Should be twenty valid ways to begin a match.
     self.assertEqual(len(moves), 20)
@@ -51,7 +51,7 @@ class TestGenericMoveGeneration(unittest.TestCase):
     self.board.board[1][3] = 'bR'
     self.engine.wk_pos = (0, 0)
 
-    actual_moves = self.engine.generate_valid_moves(self.board, 'w')
+    actual_moves = self.engine.generate_valid_moves('w')
     self.assertEqual(self.engine.in_check, True)
     self.assertEqual(self.engine.checkmate, True)
     self.assertEqual(len(actual_moves), 0)
@@ -64,7 +64,7 @@ class TestGenericMoveGeneration(unittest.TestCase):
     self.board.board[1][3] = 'bR'
     self.engine.wk_pos = (0, 0)
 
-    actual_moves = self.engine.generate_valid_moves(self.board, 'w')
+    actual_moves = self.engine.generate_valid_moves('w')
     self.assertEqual(self.engine.in_check, False)
     self.assertEqual(self.engine.checkmate, False)
     self.assertEqual(len(actual_moves), 0)

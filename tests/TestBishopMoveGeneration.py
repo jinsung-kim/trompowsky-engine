@@ -32,7 +32,7 @@ class TestBishopMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 2), Move(3, 3, 5, 1), Move(3, 3, 6, 0),  # Top-right
     ]
 
-    actual_moves = self.engine.generate_bishop_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_bishop_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -50,7 +50,7 @@ class TestBishopMoveGeneration(unittest.TestCase):
       Move(3, 3, 6, 0)
     ]
 
-    actual_moves = self.engine.generate_bishop_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_bishop_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -70,7 +70,7 @@ class TestBishopMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 4, True, SCORE_PIECE['P'])
     ]
 
-    actual_moves = self.engine.generate_bishop_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_bishop_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -87,7 +87,7 @@ class TestBishopMoveGeneration(unittest.TestCase):
       Move(0, 0, 7, 7),
     ]
 
-    actual_moves = self.engine.generate_bishop_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_bishop_moves(0, 0)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -98,11 +98,11 @@ class TestBishopMoveGeneration(unittest.TestCase):
     self.board.board[0][5] = 'wR'
     self.engine.bk_pos = (0, 0)
 
-    _, _, self.engine.pins = self.engine.get_checks_and_pins(self.board, 'b')
+    _, _, self.engine.pins = self.engine.get_checks_and_pins('b')
     # Pin from the top right.
     self.assertEqual(len(self.engine.pins), 1)
 
-    actual_moves = self.engine.generate_bishop_moves(1, 0, self.board)
+    actual_moves = self.engine.generate_bishop_moves(1, 0)
     self.assertEqual(len(actual_moves), 0)
 
 

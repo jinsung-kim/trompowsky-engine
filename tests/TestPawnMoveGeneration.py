@@ -29,7 +29,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
       Move(1, 6, 1, 4)   # Double move forward from starting position.
     ]
 
-    actual_moves = self.engine.generate_pawn_moves(1, 6, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 6)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -37,14 +37,14 @@ class TestPawnMoveGeneration(unittest.TestCase):
     self.board.board[6][1] = 'wP'
     self.board.board[5][1] = 'bP'
 
-    actual_moves = self.engine.generate_pawn_moves(1, 6, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 6)
     self.assertEqual(0, len(actual_moves))
 
   def test_black_pawn_blocked(self):
     self.board.board[1][1] = 'bP'
     self.board.board[2][1] = 'wP'
 
-    actual_moves = self.engine.generate_pawn_moves(1, 1, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
     self.assertEqual(0, len(actual_moves))
 
   def test_black_pawn_moves(self):
@@ -55,7 +55,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
       Move(1, 1, 1, 3)   # Double move forward from starting position.
     ]
 
-    actual_moves = self.engine.generate_pawn_moves(1, 1, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -69,7 +69,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
       Move(1, 6, 2, 5, True, SCORE_PIECE['P']),
     ]
 
-    actual_moves = self.engine.generate_pawn_moves(1, 6, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 6)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -83,7 +83,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
       Move(1, 1, 0, 2, True, SCORE_PIECE['P']),
     ]
 
-    actual_moves = self.engine.generate_pawn_moves(1, 1, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -96,7 +96,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
       Move(1, 1, 0, 0, True, SCORE_PIECE['Q'] + SCORE_PIECE['P'])
     ]
 
-    actual_moves = self.engine.generate_pawn_moves(1, 1, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -109,7 +109,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
       Move(1, 6, 2, 7, True, SCORE_PIECE['Q'] + SCORE_PIECE['P'])
     ]
 
-    actual_moves = self.engine.generate_pawn_moves(1, 6, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 6)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -119,10 +119,10 @@ class TestPawnMoveGeneration(unittest.TestCase):
     self.board.board[1][3] = 'bR'
     self.engine.wk_pos = (0, 1)
 
-    _, _, self.engine.pins = self.engine.get_checks_and_pins(self.board, 'w')
+    _, _, self.engine.pins = self.engine.get_checks_and_pins('w')
     self.assertEqual(len(self.engine.pins), 1)
 
-    actual_moves = self.engine.generate_pawn_moves(1, 1, self.board)
+    actual_moves = self.engine.generate_pawn_moves(1, 1)
     self.assertEqual(len(actual_moves), 0)
 
 

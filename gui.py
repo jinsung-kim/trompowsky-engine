@@ -1,4 +1,4 @@
-import pygame # type: ignore
+import pygame  # type: ignore
 from board import Board
 from engine import Engine
 
@@ -60,13 +60,13 @@ class Gui:
         self.draw_square(ci + SQUARE_SIDE, cj + SQUARE_SIDE, WHITE)
 
   def draw_square(self, i, j, color):
-    pygame.draw.rect(self.game_display, color, \
-    pygame.Rect(i, j, SQUARE_SIDE, SQUARE_SIDE))
+    pygame.draw.rect(self.game_display, color,
+                     pygame.Rect(i, j, SQUARE_SIDE, SQUARE_SIDE))
 
   def draw_pieces(self, board: Board):
     for i in range(8):
       for j in range(8):
-        if (board.board[j][i] != "--"):
+        if board.board[j][i] != "--":
           self.game_display.blit(image_dict[board.board[j][i]], ((i * 50) - 5, (j * 50) - 5))
 
   # TODO: Take user input -> Generate valid moves for that piece -> Highlight them.
@@ -77,4 +77,3 @@ class Gui:
     self.draw_board()
     self.draw_pieces(board)
     pygame.display.update()
-  

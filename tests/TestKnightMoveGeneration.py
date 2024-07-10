@@ -35,7 +35,7 @@ class TestKnightMoveGeneration(unittest.TestCase):
       Move(3, 3, 5, 4)   # Down-right
     ]
 
-    actual_moves = self.engine.generate_knight_moves(3, 3, self.board)
+    actual_moves = self.engine.generate_knight_moves(3, 3)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -47,7 +47,7 @@ class TestKnightMoveGeneration(unittest.TestCase):
       Move(0, 0, 1, 2),
     ]
 
-    actual_moves = self.engine.generate_knight_moves(0, 0, self.board)
+    actual_moves = self.engine.generate_knight_moves(0, 0)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
 
@@ -58,11 +58,11 @@ class TestKnightMoveGeneration(unittest.TestCase):
 
     self.engine.wk_pos = (0, 0)
 
-    _, _, self.engine.pins = self.engine.get_checks_and_pins(self.board, 'w')
+    _, _, self.engine.pins = self.engine.get_checks_and_pins('w')
     # Pinned by rook on the right.
     self.assertEquals(len(self.engine.pins), 1)
 
-    actual_moves = self.engine.generate_knight_moves(1, 0, self.board)
+    actual_moves = self.engine.generate_knight_moves(1, 0)
     self.assertEqual(len(actual_moves), 0)
 
 

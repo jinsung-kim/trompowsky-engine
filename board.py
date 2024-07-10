@@ -35,7 +35,6 @@ class Board:
 
     # TODO: Track all of the game moves.
     self.game_log = []
-    self.ai_move = False
 
   def __repr__(self) -> str:
     return '\n' + '\n'.join([' '.join(row) for row in self.board]) + '\n'
@@ -49,10 +48,13 @@ class Board:
     once this function is handed the move - it is assumed that it is valid.
 
     Handles promotions, piece capturing, etc.
-    TODO: Figure out how to log a game.
 
     args:
       move (Move): The current position of the piece and the desired place of the piece.
     """
-    pass
+    piece = self.board[move.j][move.i]
+    self.board[move.nj][move.ni] = piece
+
+    # TODO: Figure out how to log a game.
+    return True
 
