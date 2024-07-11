@@ -54,6 +54,19 @@ class Board:
     """
     piece = self.board[move.j][move.i]
     self.board[move.nj][move.ni] = piece
+    self.board[move.j][move.i] = '--'
+
+    p_color, p_type = piece[0], piece[1]
+
+    # Consider promotion.
+    if p_type == 'P':
+      if p_color == 'w':
+        promotion_row = 0
+      else:
+        promotion_row = 7
+
+      if move.nj == promotion_row:
+        self.board[move.nj][move.ni] = p_color + 'Q'
 
     # TODO: Figure out how to log a game.
     return True

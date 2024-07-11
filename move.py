@@ -22,8 +22,9 @@ class Move:
   def __eq__(self, other: 'Move') -> bool:
     if not isinstance(other, Move):
       return NotImplemented
-    return (self.i, self.j, self.ni, self.nj, self.is_capture_move, self.score) == \
-      (other.i, other.j, other.ni, other.nj, other.is_capture_move, other.score)
+    # TODO: Should this include is_capture_move and score?
+    return (self.i, self.j, self.ni, self.nj) == \
+      (other.i, other.j, other.ni, other.nj)
 
   # TODO: Write chess notation logs.
 

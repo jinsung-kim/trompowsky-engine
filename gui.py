@@ -94,16 +94,24 @@ class Gui:
     if self.last_selected is not None:
       i, j = self.last_selected
       piece = engine.board.board[j][i]
-      valid_moves = engine.move_functions[piece[1]](i, j)
+      if piece == '--':
+        return
 
+      valid_moves = engine.move_functions[piece[1]](i, j)
       self.draw_square(i * 50, j * 50, YELLOW)
 
       for move in valid_moves:
         ci, cj = move.ni * 50, move.nj * 50
         self.draw_square(ci, cj, BLUE_LIGHT)
 
+  def highlight_check_maybe(self, engine: Engine):
+    if engine.in_check:
+      ci, cj = engine.wk_pos[0] * 50, engine.wk_pos[1] * 50
+      self.draw_square(ci, cj, RED_CHECK)
+
   def update_game_state(self, engine):
     self.draw_board()
     self.highlight_moves(engine)
+    self.highlight_check_maybe(engine)
     self.draw_pieces(engine.board)
     pygame.display.update()
