@@ -1,4 +1,4 @@
-from move import Move
+from move import Move, SCORE_PIECE
 from copy import deepcopy
 
 EMPTY_BOARD = [
@@ -35,6 +35,7 @@ class Board:
 
     # TODO: Track all of the game moves.
     self.game_log = []
+    self.ai_move = False
 
   def __repr__(self) -> str:
     return '\n' + '\n'.join([' '.join(row) for row in self.board]) + '\n'
@@ -71,3 +72,14 @@ class Board:
     # TODO: Figure out how to log a game.
     return True
 
+  def score_board(self) -> int:
+    """
+    Score the current board, user pieces are scored positively, AI pieces are scored negatively.
+    """
+    score = 0
+    for i in range(8):
+      for j in range(8):
+        piece = self.board[j][i]
+        if piece != '--':
+          score += SCORE_PIECE[piece[1]] if piece[0] == 'w' else -SCORE_PIECE[piece[1]]
+    return score

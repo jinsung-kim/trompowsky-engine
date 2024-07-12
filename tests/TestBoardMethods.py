@@ -24,6 +24,11 @@ class TestBoardMethods(unittest.TestCase):
 
     self.assertEqual(self.board.board, EMPTY_BOARD)
 
+  def test_score_board(self):
+    self.assertEqual(self.board.score_board(), 0)
+    self.board.clear_board()
+    self.assertEqual(self.board.score_board(), 0)
+
 
 if __name__ == '__main__':
   unittest.main()
