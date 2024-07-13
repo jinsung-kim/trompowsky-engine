@@ -43,10 +43,11 @@ class Board:
   def clear_board(self):
     self.board = deepcopy(EMPTY_BOARD)
 
-  def make_move(self, move: Move) -> bool:
+  def make_move(self, move: Move):
     """
     Moves a piece from (i, j) to (ni, nj). Moves will be pre-vetted so
-    once this function is handed the move - it is assumed that it is valid.
+    once this function is handed the move - it is assumed that it is valid. Make a copy of the board beforehand
+    to make hypothetical moves.
 
     Handles promotions, piece capturing, etc.
 
@@ -68,9 +69,6 @@ class Board:
 
       if move.nj == promotion_row:
         self.board[move.nj][move.ni] = p_color + 'Q'
-
-    # TODO: Figure out how to log a game.
-    return True
 
   def score_board(self) -> int:
     """
