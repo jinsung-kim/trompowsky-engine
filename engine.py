@@ -19,11 +19,6 @@ class Engine:
 
     self.board: Board = board
 
-    # Location Format: (i, j).
-    # Must be up-to-date.
-    self.wk_pos = (4, 7)
-    self.bk_pos = (4, 0)
-
     self.in_check = False
     self.pins: List[MoveBlockVector] = []
     self.checks: List[MoveBlockVector] = []
@@ -200,9 +195,9 @@ class Engine:
     valid_moves: List[Move] = []
     for move in moves:
       if c == 'w':
-        self.wk_pos = (move.ni, move.nj)
+        self.board.wk_pos = (move.ni, move.nj)
       else:
-        self.bk_pos = (move.ni, move.nj)
+        self.board.bk_pos = (move.ni, move.nj)
 
       in_check, _, _ = self.get_checks_and_pins(c)
 
@@ -210,9 +205,9 @@ class Engine:
         valid_moves.append(move)
 
       if c == 'w':
-        self.wk_pos = (move.i, move.j)
+        self.board.wk_pos = (move.i, move.j)
       else:
-        self.bk_pos = (move.i, move.j)
+        self.board.bk_pos = (move.i, move.j)
 
     return valid_moves
 
@@ -222,9 +217,9 @@ class Engine:
     """
     self.in_check, self.checks, self.pins = self.get_checks_and_pins(c)
     if c == 'w':
-      k_pos = self.wk_pos
+      k_pos = self.board.wk_pos
     else:
-      k_pos = self.bk_pos
+      k_pos = self.board.bk_pos
 
     if self.in_check:
       if len(self.checks) == 1:
@@ -282,7 +277,7 @@ class Engine:
     in_check = False
 
     oppo = get_opposite_color(c)
-    start_pos = self.wk_pos if c == 'w' else self.bk_pos
+    start_pos = self.board.wk_pos if c == 'w' else self.board.bk_pos
     for i in range(len(Movement.King)):
       d = Movement.King[i]
       possible_pin = None

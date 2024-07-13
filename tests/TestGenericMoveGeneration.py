@@ -49,7 +49,7 @@ class TestGenericMoveGeneration(unittest.TestCase):
     self.board.board[0][0] = 'wK'
     self.board.board[0][4] = 'bR'
     self.board.board[1][3] = 'bR'
-    self.engine.wk_pos = (0, 0)
+    self.board.wk_pos = (0, 0)
 
     actual_moves = self.engine.generate_valid_moves('w')
     self.assertEqual(self.engine.in_check, True)
@@ -62,7 +62,7 @@ class TestGenericMoveGeneration(unittest.TestCase):
     self.board.board[0][1] = 'wB'
     self.board.board[0][4] = 'bR'
     self.board.board[1][3] = 'bR'
-    self.engine.wk_pos = (0, 0)
+    self.board.wk_pos = (0, 0)
 
     actual_moves = self.engine.generate_valid_moves('w')
     self.assertEqual(self.engine.in_check, False)

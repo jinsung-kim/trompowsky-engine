@@ -56,7 +56,7 @@ class TestKnightMoveGeneration(unittest.TestCase):
     self.board.board[0][1] = 'wN'
     self.board.board[0][2] = 'bR'
 
-    self.engine.wk_pos = (0, 0)
+    self.board.wk_pos = (0, 0)
 
     _, _, self.engine.pins = self.engine.get_checks_and_pins('w')
     # Pinned by rook on the right.

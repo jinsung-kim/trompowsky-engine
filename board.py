@@ -36,6 +36,11 @@ class Board:
     # TODO: Track all of the game moves.
     self.game_log = []
 
+    # Location Format: (i, j).
+    # Must be up-to-date.
+    self.wk_pos = (4, 7)
+    self.bk_pos = (4, 0)
+
   def __repr__(self) -> str:
     return '\n' + '\n'.join([' '.join(row) for row in self.board]) + '\n'
 
@@ -58,9 +63,9 @@ class Board:
 
     if p_type == 'K':
       if p_color == 'b':
-        engine.bk_pos = (move.ni, move.nj)
+        self.bk_pos = (move.ni, move.nj)
       else:
-        engine.wk_pos = (move.ni, move.nj)
+        self.wk_pos = (move.ni, move.nj)
 
     # Consider promotion.
     if p_type == 'P':

@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move, SCORE_PIECE
+from move import Move
 from helpers import sort_moves
 
 
@@ -86,7 +86,7 @@ class TestKingMoveGeneration(unittest.TestCase):
   def test_king_with_opposing_pawn_threat(self):
     self.board.board[0][0] = 'bK'
     self.board.board[1][2] = 'wP'
-    self.engine.bk_pos = (0, 0)
+    self.board.bk_pos = (0, 0)
 
     expected_moves = [
       Move(0, 0, 0, 1),
@@ -100,7 +100,7 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.board.board[0][0] = 'bK'
     self.board.board[1][1] = 'wR'
     self.board.board[2][2] = 'wP'
-    self.engine.bk_pos = (0, 0)
+    self.board.bk_pos = (0, 0)
 
     actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(len(actual_moves), 0)
@@ -109,8 +109,8 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.board.board[0][0] = 'bK'
     self.board.board[3][3] = 'wK'
 
-    self.engine.bk_pos = (0, 0)
-    self.engine.wk_pos = (0, 0)
+    self.board.bk_pos = (0, 0)
+    self.board.wk_pos = (0, 0)
 
     actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(len(actual_moves), 3)
@@ -119,8 +119,8 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.board.board[0][0] = 'bK'
     self.board.board[2][1] = 'wK'
 
-    self.engine.bk_pos = (0, 0)
-    self.engine.wk_pos = (1, 2)
+    self.board.bk_pos = (0, 0)
+    self.board.wk_pos = (1, 2)
 
     actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(len(actual_moves), 1)

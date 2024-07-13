@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move, SCORE_PIECE
+from move import Move
 from helpers import sort_moves
 
 
@@ -117,7 +117,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
     self.board.board[1][0] = 'wK'
     self.board.board[1][1] = 'wP'
     self.board.board[1][3] = 'bR'
-    self.engine.wk_pos = (0, 1)
+    self.board.wk_pos = (0, 1)
 
     _, _, self.engine.pins = self.engine.get_checks_and_pins('w')
     self.assertEqual(len(self.engine.pins), 1)

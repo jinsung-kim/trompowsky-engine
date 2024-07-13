@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move, SCORE_PIECE
+from move import Move
 from helpers import sort_moves
 
 
@@ -96,7 +96,7 @@ class TestBishopMoveGeneration(unittest.TestCase):
     self.board.board[0][1] = 'bB'
     # Pinning bishop.
     self.board.board[0][5] = 'wR'
-    self.engine.bk_pos = (0, 0)
+    self.board.bk_pos = (0, 0)
 
     _, _, self.engine.pins = self.engine.get_checks_and_pins('b')
     # Pin from the top right.

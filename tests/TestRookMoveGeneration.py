@@ -8,7 +8,7 @@ sys.path.append(parent_dir)
 
 from board import Board
 from engine import Engine
-from move import Move, SCORE_PIECE
+from move import Move
 from helpers import sort_moves
 
 
@@ -98,7 +98,7 @@ class TestRookMoveGeneration(unittest.TestCase):
    self.board.board[0][0] = 'wK'
    self.board.board[0][1] = 'wR'
    self.board.board[0][2] = 'bQ'
-   self.engine.wk_pos = (0, 0)
+   self.board.wk_pos = (0, 0)
 
    _, _, self.engine.pins = self.engine.get_checks_and_pins('w')
    # Pinned by queen on the right.
