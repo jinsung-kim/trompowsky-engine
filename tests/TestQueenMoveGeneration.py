@@ -58,8 +58,8 @@ class TestQueenMoveGeneration(unittest.TestCase):
     expected_moves = [
       Move(3, 3, 2, 3), Move(3, 3, 1, 3), Move(3, 3, 0, 3),  # Left
       Move(3, 3, 3, 2), Move(3, 3, 3, 1), Move(3, 3, 3, 0),  # Up
-      Move(3, 3, 4, 3), Move(3, 3, 5, 3, True, SCORE_PIECE['P']),  # Right up to enemy piece
-      Move(3, 3, 3, 4), Move(3, 3, 3, 5, True, SCORE_PIECE['P']),  # Down up to enemy piece
+      Move(3, 3, 4, 3), Move(3, 3, 5, 3, ),  # Right up to enemy piece
+      Move(3, 3, 3, 4), Move(3, 3, 3, 5, ),  # Down up to enemy piece
       Move(3, 3, 2, 2), Move(3, 3, 1, 1), Move(3, 3, 0, 0),  # Top-left
       Move(3, 3, 4, 4), Move(3, 3, 5, 5),
       Move(3, 3, 6, 6), Move(3, 3, 7, 7),  # Bottom-right up to friendly piece

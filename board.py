@@ -35,7 +35,6 @@ class Board:
 
     # TODO: Track all of the game moves.
     self.game_log = []
-    self.ai_move = False
 
   def __repr__(self) -> str:
     return '\n' + '\n'.join([' '.join(row) for row in self.board]) + '\n'
@@ -45,10 +44,7 @@ class Board:
 
   def make_move(self, move: Move):
     """
-    Moves a piece from (i, j) to (ni, nj). Moves will be pre-vetted so
-    once this function is handed the move - it is assumed that it is valid. Make a copy of the board beforehand
-    to make hypothetical moves.
-
+    Moves a piece from (i, j) to (ni, nj).
     Handles promotions, piece capturing, etc.
 
     args:
@@ -60,6 +56,12 @@ class Board:
 
     p_color, p_type = piece[0], piece[1]
 
+    if p_type == 'K':
+      if p_color == 'b':
+        engine.bk_pos = (move.ni, move.nj)
+      else:
+        engine.wk_pos = (move.ni, move.nj)
+
     # Consider promotion.
     if p_type == 'P':
       if p_color == 'w':
@@ -69,6 +71,13 @@ class Board:
 
       if move.nj == promotion_row:
         self.board[move.nj][move.ni] = p_color + 'Q'
+
+  def undo_move(self, move: Move):
+    """
+    Undo a move from (ni, nj) to (i, j).
+    Undoes promotions, king movement, captured pieces.
+    """
+    pass
 
   def score_board(self) -> int:
     """
@@ -81,3 +90,7 @@ class Board:
         if piece != '--':
           score += SCORE_PIECE[piece[1]] if piece[0] == 'w' else -SCORE_PIECE[piece[1]]
     return score
+
+  # TODO: Write this.
+  def log_move(self, move: Move):
+    pass

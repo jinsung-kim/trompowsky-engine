@@ -1,7 +1,7 @@
 from board import Board
 from typing import List, Callable, Tuple, Optional
 from helpers import get_opposite_color, Movement
-from move import Move, SCORE_PIECE, MoveBlockVector
+from move import Move, MoveBlockVector
 from math import gcd
 
 
@@ -41,11 +41,10 @@ class Engine:
     color = self.board.board[j][i][0]
     oppo = 'b' if color == 'w' else 'w'
     new_pos = self.board.board[nj][ni]
-    promotion_score = 0
     if new_pos == '--':
-      return Move(i, j, ni, nj, False, promotion_score)
+      return Move(i, j, ni, nj, None)
     elif oppo == new_pos[0]:
-      return Move(i, j, ni, nj, True, promotion_score + SCORE_PIECE[new_pos[1]])
+      return Move(i, j, ni, nj, new_pos)
     else:
       return None
 
@@ -103,7 +102,7 @@ class Engine:
       move_maybe = self.return_valid_move(i, j, ni, nj)
       if move_maybe is not None:
         moves.append(move_maybe)
-        if move_maybe.is_capture_move:
+        if move_maybe.capture_piece:
           break
       else:
         break
@@ -157,11 +156,9 @@ class Engine:
     if color == 'w':
       direction = -1
       start_row = 6
-      promotion_row = 0
     else:
       direction = 1
       start_row = 1
-      promotion_row = 7
 
     # Pawns can move up/down two squares if they are on the starting row.
     nj = j + direction
@@ -177,16 +174,10 @@ class Engine:
       ni = i + di
       nj = j + direction
 
-      if self.in_bounds(ni, nj) and oppo == self.board.board[nj][ni][0] and (pin is None or pin.d == (di, direction)):
-        score: int = SCORE_PIECE[self.board.board[nj][ni][1]]
-        moves.append(Move(i, j, ni, nj, True, score))
-
-    # Check for promotion to re-evaluate scores. Automatically promote to queen.
-    for move in moves:
-      if move.nj == promotion_row:
-        # TODO: Make this support the others.
-        promotion_score = move.score + SCORE_PIECE['Q'] - SCORE_PIECE['P']
-        move.score += promotion_score
+      if self.in_bounds(ni, nj):
+        new_pos = self.board.board[nj][ni]
+        if oppo == new_pos[0] and (pin is None or pin.d == (di, direction)):
+          moves.append(Move(i, j, ni, nj, new_pos))
 
     return moves
 

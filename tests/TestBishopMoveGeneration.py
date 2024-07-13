@@ -66,8 +66,8 @@ class TestBishopMoveGeneration(unittest.TestCase):
       Move(3, 3, 4, 2),
       Move(3, 3, 5, 1),
       Move(3, 3, 6, 0),
-      Move(3, 3, 2, 2, True, SCORE_PIECE['P']),
-      Move(3, 3, 4, 4, True, SCORE_PIECE['P'])
+      Move(3, 3, 2, 2, ),
+      Move(3, 3, 4, 4, )
     ]
 
     actual_moves = self.engine.generate_bishop_moves(3, 3)

@@ -66,7 +66,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
     expected_moves = [
       Move(1, 6, 1, 5),
       Move(1, 6, 1, 4),
-      Move(1, 6, 2, 5, True, SCORE_PIECE['P']),
+      Move(1, 6, 2, 5, ),
     ]
 
     actual_moves = self.engine.generate_pawn_moves(1, 6)
@@ -80,7 +80,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
     expected_moves = [
       Move(1, 1, 1, 2),
       Move(1, 1, 1, 3),
-      Move(1, 1, 0, 2, True, SCORE_PIECE['P']),
+      Move(1, 1, 0, 2, ),
     ]
 
     actual_moves = self.engine.generate_pawn_moves(1, 1)
@@ -93,7 +93,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
     self.board.board[0][1] = 'bP'
 
     expected_moves = [
-      Move(1, 1, 0, 0, True, SCORE_PIECE['Q'] + SCORE_PIECE['P'])
+      Move(1, 1, 0, 0, )
     ]
 
     actual_moves = self.engine.generate_pawn_moves(1, 1)
@@ -106,7 +106,7 @@ class TestPawnMoveGeneration(unittest.TestCase):
     self.board.board[7][2] = 'wP'
 
     expected_moves = [
-      Move(1, 6, 2, 7, True, SCORE_PIECE['Q'] + SCORE_PIECE['P'])
+      Move(1, 6, 2, 7, )
     ]
 
     actual_moves = self.engine.generate_pawn_moves(1, 6)

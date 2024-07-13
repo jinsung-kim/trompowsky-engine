@@ -76,7 +76,7 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.engine.wk_pos = (0, 0)
 
     expected_moves = [
-      Move(0, 0, 1, 1, True, SCORE_PIECE['R'])
+      Move(0, 0, 1, 1, )
     ]
 
     actual_moves = self.engine.generate_king_moves(0, 0)
