@@ -1,12 +1,12 @@
 from typing import Tuple
 
 SCORE_PIECE = {
-  'K': 900,
-  'Q': 90,
-  'R': 50,
-  'B': 30,
-  'N': 30,
-  'P': 5,
+  'K': 90,
+  'Q': 9,
+  'R': 5,
+  'B': 3,
+  'N': 3,
+  'P': 1,
 }
 
 
