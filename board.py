@@ -87,7 +87,6 @@ class Board:
     self.board[move.j][move.i] = piece
     self.board[move.nj][move.ni] = '--' if move.captured_piece is None else move.captured_piece
 
-
     p_color, p_type = piece[0], piece[1]
 
     if p_type == 'K':

@@ -25,11 +25,7 @@ class Ai:
 
     max_score = -10000
 
-    i = 0
     for move in valid_moves:
-      if i > 1:
-        return 0
-      i += 1
       engine.board.make_move(move)
       valid_opposing_moves = engine.generate_valid_moves('w' if turn_multiplier == -1 else 'b')
       score = -self.find_alpha_beta_prune_move(valid_opposing_moves, engine, depth - 1, -beta, -alpha, -turn_multiplier)
