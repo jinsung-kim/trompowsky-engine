@@ -32,7 +32,6 @@ class Engine:
     return 0 <= i < 8 and 0 <= j < 8
 
   def return_valid_move(self, i, j, ni, nj) -> Optional[Move]:
-    # TODO: Should this function handle pawn promotion?
     color = self.board.board[j][i][0]
     oppo = 'b' if color == 'w' else 'w'
     new_pos = self.board.board[nj][ni]
@@ -97,7 +96,7 @@ class Engine:
       move_maybe = self.return_valid_move(i, j, ni, nj)
       if move_maybe is not None:
         moves.append(move_maybe)
-        if move_maybe.capture_piece:
+        if move_maybe.captured_piece:
           break
       else:
         break
@@ -151,19 +150,21 @@ class Engine:
     if color == 'w':
       direction = -1
       start_row = 6
+      promotion_row = 0
     else:
       direction = 1
       start_row = 1
+      promotion_row = 7
 
     # Pawns can move up/down two squares if they are on the starting row.
     nj = j + direction
 
     if 0 <= nj < 8 and self.board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
-      moves.append(Move(i, j, i, nj))
+      moves.append(Move(i, j, i, nj, None, nj == promotion_row))
 
       nj += direction
       if j == start_row and self.board.board[nj][i] == '--' and (pin is None or pin.d == (0, direction)):
-        moves.append(Move(i, j, i, nj))
+        moves.append(Move(i, j, i, nj))  # Can't be promoted given starting position.
 
     for di in [-1, 1]:
       ni = i + di
@@ -172,7 +173,7 @@ class Engine:
       if self.in_bounds(ni, nj):
         new_pos = self.board.board[nj][ni]
         if oppo == new_pos[0] and (pin is None or pin.d == (di, direction)):
-          moves.append(Move(i, j, ni, nj, new_pos))
+          moves.append(Move(i, j, ni, nj, new_pos, nj == promotion_row))
 
     return moves
 

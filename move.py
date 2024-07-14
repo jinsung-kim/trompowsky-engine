@@ -12,12 +12,12 @@ SCORE_PIECE = {
 
 class Move:
 
-  def __init__(self, i, j, ni, nj, capture_piece=None) -> None:
-    self.i, self.j, self.ni, self.nj, self.capture_piece = \
-      i, j, ni, nj, capture_piece
+  def __init__(self, i, j, ni, nj, captured_piece=None, promote=False) -> None:
+    self.i, self.j, self.ni, self.nj, self.captured_piece, self.promote = \
+      i, j, ni, nj, captured_piece, promote
 
   def __repr__(self) -> str:
-    return f"({self.i}, {self.j}) -> ({self.ni}, {self.nj}) capture_piece={self.capture_piece}"
+    return f"({self.i}, {self.j}) -> ({self.ni}, {self.nj}) captured_piece={self.captured_piece} promote={self.promote}"
 
   def __eq__(self, other: 'Move') -> bool:
     if not isinstance(other, Move):

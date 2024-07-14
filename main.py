@@ -1,11 +1,15 @@
+from typing import List
+
 import pygame  # type: ignore
 
 from engine import Engine
 from gui import Gui
 from board import Board
+from ai import Ai
 from move import Move
 from random import choice
 
+MAX_FPS = 30
 
 if __name__ == '__main__':
   pygame.init()
@@ -14,6 +18,10 @@ if __name__ == '__main__':
   board = Board()
   engine = Engine(board)
   gui = Gui()
+  ai = Ai(depth=3)
+
+  clock = pygame.time.Clock()
+  clock.tick(MAX_FPS)
 
   print('Starting game.')
 
@@ -28,8 +36,12 @@ if __name__ == '__main__':
       print('Tie. Stalemate.')
       return False
 
-    # TODO: Calculate AI move using A/B pruning.
-    board.make_move(choice(valid_ai_moves))
+    optimal_move = ai.find_optimal_move(valid_ai_moves, engine)
+
+    if optimal_move is None:
+      board.make_move(choice(valid_ai_moves))
+    else:
+      board.make_move(optimal_move)
 
     _ = engine.generate_valid_moves('w')
     if engine.checkmate:

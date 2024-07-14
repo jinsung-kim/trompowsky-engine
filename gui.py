@@ -104,14 +104,8 @@ class Gui:
         ci, cj = move.ni * 50, move.nj * 50
         self.draw_square(ci, cj, BLUE_LIGHT)
 
-  def highlight_check_maybe(self, engine: Engine):
-    if engine.in_check:
-      ci, cj = engine.wk_pos[0] * 50, engine.wk_pos[1] * 50
-      self.draw_square(ci, cj, RED_CHECK)
-
   def update_game_state(self, engine):
     self.draw_board()
     self.highlight_moves(engine)
-    self.highlight_check_maybe(engine)
     self.draw_pieces(engine.board)
     pygame.display.update()

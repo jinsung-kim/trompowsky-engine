@@ -42,6 +42,7 @@ class Board:
     self.bk_pos = (4, 0)
 
   def __repr__(self) -> str:
+    print(self.board)
     return '\n' + '\n'.join([' '.join(row) for row in self.board]) + '\n'
 
   def clear_board(self):
@@ -82,11 +83,32 @@ class Board:
     Undo a move from (ni, nj) to (i, j).
     Undoes promotions, king movement, captured pieces.
     """
-    pass
+    piece = self.board[move.nj][move.ni]
+    self.board[move.j][move.i] = piece
+    self.board[move.nj][move.ni] = '--' if move.captured_piece is None else move.captured_piece
+
+
+    p_color, p_type = piece[0], piece[1]
+
+    if p_type == 'K':
+      if p_color == 'b':
+        self.bk_pos = (move.i, move.j)
+      else:
+        self.wk_pos = (move.i, move.j)
+
+    # Undo promotion when applicable.
+    if p_type == 'Q':
+      if p_color == 'w':
+        promotion_row = 0
+      else:
+        promotion_row = 7
+
+      if move.nj == promotion_row and move.promote:
+        self.board[move.j][move.i] = p_color + 'P'
 
   def score_board(self) -> int:
     """
-    Score the current board, user pieces are scored positively, AI pieces are scored negatively.
+    Score the current board, user pieces are scored positively, AI pieces are scored as neg 1.
     """
     score = 0
     for i in range(8):
