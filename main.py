@@ -1,5 +1,3 @@
-from typing import List
-
 import pygame  # type: ignore
 
 from engine import Engine
@@ -37,6 +35,7 @@ if __name__ == '__main__':
 
     optimal_move = ai.find_optimal_move(valid_ai_moves, engine)
 
+    # FIXME: Prevent the AI from actually capturing the king.
     if optimal_move is None:
       random_move = choice(valid_ai_moves)
       board.make_move(random_move)
@@ -76,6 +75,9 @@ if __name__ == '__main__':
 
       gui.update_game_state(engine)
 
-  print(board.game_log)
+  board.log_game()
 
-  pygame.quit()
+  while True:
+    continue
+
+  # pygame.quit()

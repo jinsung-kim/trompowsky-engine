@@ -217,10 +217,13 @@ class Engine:
     Returns all moves accounting for checks.
     """
     self.in_check, self.checks, self.pins = self.get_checks_and_pins(c)
+    print('generate_valid_moves:')
+    print(self.in_check, self.checks, self.pins)
     if c == 'w':
       k_pos = self.board.wk_pos
     else:
       k_pos = self.board.bk_pos
+    print(k_pos)
 
     if self.in_check:
       if len(self.checks) == 1:

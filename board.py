@@ -153,3 +153,11 @@ class Board:
     self.game_log.append(notation)
 
     return notation
+
+  def log_game(self):
+    for i in range(0, len(self.game_log), 2):
+      move_c = i // 2
+      if i + 1 < len(self.game_log):
+        print(move_c, self.game_log[i], self.game_log[i + 1])
+      else:
+        print(move_c, self.game_log[i], "...")
