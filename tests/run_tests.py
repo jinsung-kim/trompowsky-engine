@@ -7,6 +7,7 @@ from TestQueenMoveGeneration import TestQueenMoveGeneration
 from TestKingMoveGeneration import TestKingMoveGeneration
 from TestKnightMoveGeneration import TestKnightMoveGeneration
 from TestBoardMethods import TestBoardMethods
+from TestChessNotation import TestChessNotation
 from TestGenericMoveGeneration import TestGenericMoveGeneration
 
 if __name__ == '__main__':
@@ -19,6 +20,7 @@ if __name__ == '__main__':
     TestQueenMoveGeneration,
     TestGenericMoveGeneration,
     TestBoardMethods,
+    TestChessNotation
   ]
 
   test_suite = unittest.TestSuite()

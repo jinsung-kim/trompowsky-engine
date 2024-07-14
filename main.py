@@ -23,10 +23,9 @@ if __name__ == '__main__':
   clock = pygame.time.Clock()
   clock.tick(MAX_FPS)
 
-  print('Starting game.')
-
   def process_move(move: Move):
     board.make_move(move)
+    board.log_move(move)
 
     valid_ai_moves = engine.generate_valid_moves('b')
     if engine.checkmate:
@@ -39,9 +38,12 @@ if __name__ == '__main__':
     optimal_move = ai.find_optimal_move(valid_ai_moves, engine)
 
     if optimal_move is None:
-      board.make_move(choice(valid_ai_moves))
+      random_move = choice(valid_ai_moves)
+      board.make_move(random_move)
+      board.log_move(random_move)
     else:
       board.make_move(optimal_move)
+      board.log_move(optimal_move)
 
     _ = engine.generate_valid_moves('w')
     if engine.checkmate:
@@ -74,6 +76,6 @@ if __name__ == '__main__':
 
       gui.update_game_state(engine)
 
-  print('Ending game.')
+  print(board.game_log)
 
   pygame.quit()

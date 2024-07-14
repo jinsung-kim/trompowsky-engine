@@ -27,3 +27,7 @@ def sort_moves(moves: List[Move]) -> List[Move]:
 
 def get_opposite_color(color: str) -> str:
   return 'b' if color == 'w' else 'w'
+
+
+def glue_notation(n) -> str:
+  return n['file'] + n['rank']

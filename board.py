@@ -1,3 +1,4 @@
+from helpers import glue_notation
 from move import Move, SCORE_PIECE
 from copy import deepcopy
 
@@ -27,7 +28,7 @@ START_BOARD = [
 # Maintains game state.
 class Board:
 
-  def __init__(self, is_test_board: bool = False):
+  def __init__(self, is_test_board: bool = False, console_moves: bool = False):
     if is_test_board:
       self.board = deepcopy(EMPTY_BOARD)
     else:
@@ -35,6 +36,7 @@ class Board:
 
     # TODO: Track all of the game moves.
     self.game_log = []
+    self.console_moves = console_moves
 
     # Location Format: (i, j).
     # Must be up-to-date.
@@ -117,6 +119,37 @@ class Board:
           score += SCORE_PIECE[piece[1]] if piece[0] == 'w' else -SCORE_PIECE[piece[1]]
     return score
 
-  # TODO: Write this.
+  @staticmethod
+  def to_chess_notation(i, j) -> dict[str, str]:
+    files = 'abcdefgh'
+    ranks = '87654321'
+
+    return {'file': files[i], 'rank': ranks[j]}
+
   def log_move(self, move: Move):
-    pass
+    """
+    Logs the provided move into the game log.
+    Must be called after the move is complete.
+    source: https://www.chessstrategyonline.com/content/tutorials/basic-chess-concepts-chess-notation
+    """
+    notation = ''
+    piece = self.board[move.nj][move.ni]
+    destination_pos = glue_notation(self.to_chess_notation(move.ni, move.nj))
+    if piece[1] == 'P' or (piece[1] == 'Q' and move.promote):
+      if move.captured_piece:
+        initial_file = self.to_chess_notation(move.i, move.j)['file']
+        notation = initial_file + 'x'
+      # TODO: Once we handle under-promotions, we need to revise this case.
+      if move.promote:
+        destination_pos += '=Q'
+
+      notation += destination_pos
+    else:
+      notation = piece[1]
+      if move.captured_piece:
+        notation += 'x'
+      notation += destination_pos
+
+    self.game_log.append(notation)
+
+    return notation
