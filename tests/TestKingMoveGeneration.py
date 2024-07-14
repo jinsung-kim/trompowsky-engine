@@ -76,7 +76,7 @@ class TestKingMoveGeneration(unittest.TestCase):
     self.engine.wk_pos = (0, 0)
 
     expected_moves = [
-      Move(0, 0, 1, 1, )
+      Move(0, 0, 1, 1)
     ]
 
     actual_moves = self.engine.generate_king_moves(0, 0)
@@ -95,6 +95,38 @@ class TestKingMoveGeneration(unittest.TestCase):
     actual_moves = self.engine.generate_king_moves(0, 0)
     self.assertEqual(sort_moves(actual_moves),
                      sort_moves(expected_moves))
+
+  def test_king_with_opposing_pawn_threat_with_friendly_block(self):
+    self.board.board[2][2] = 'wK'
+    self.board.board[0][0] = 'bP'
+    self.board.board[1][1] = 'bN'
+    self.board.wk_pos = (2, 2)
+
+    actual_moves = self.engine.generate_king_moves(2, 2)
+    self.assertEqual(len(actual_moves), 5)
+
+    in_check, _, pins = self.engine.get_checks_and_pins('w')
+    self.assertEqual(in_check, False)
+    self.assertEqual(len(pins), 0)
+
+  def test_king_check(self):
+    self.board.board[3][3] = 'wK'
+    self.board.wk_pos = (3, 3)
+    self.board.board[0][0] = 'bB'
+
+    in_check, _, _ = self.engine.get_checks_and_pins('w')
+    self.assertEqual(in_check, True)
+
+  def test_king_double_check(self):
+    self.board.board[3][3] = 'wK'
+    self.board.board[0][0] = 'bB'
+    self.board.board[3][0] = 'bR'
+    self.board.wk_pos = (3, 3)
+
+    in_check, checks, pins = self.engine.get_checks_and_pins('w')
+    self.assertEqual(in_check, True)
+    self.assertEqual(len(checks), 2)
+    self.assertEqual(len(pins), 0)
 
   def test_king_stalemate(self):
     self.board.board[0][0] = 'bK'
