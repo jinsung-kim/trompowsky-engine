@@ -97,12 +97,13 @@ class Gui:
       if piece == '--':
         return
 
-      valid_moves = engine.move_functions[piece[1]](i, j)
       self.draw_square(i * 50, j * 50, YELLOW)
 
+      valid_moves = engine.generate_valid_moves('w')
       for move in valid_moves:
-        ci, cj = move.ni * 50, move.nj * 50
-        self.draw_square(ci, cj, BLUE_LIGHT)
+        if move.i == i and move.j == j:
+          ci, cj = move.ni * 50, move.nj * 50
+          self.draw_square(ci, cj, BLUE_LIGHT)
 
   def update_game_state(self, engine):
     self.draw_board()
