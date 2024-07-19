@@ -25,7 +25,6 @@ START_BOARD = [
 ]
 
 
-# Maintains game state.
 class Board:
 
   def __init__(self, is_test_board: bool = False, console_moves: bool = False):
@@ -52,9 +51,6 @@ class Board:
     """
     Moves a piece from (i, j) to (ni, nj).
     Handles promotions, piece capturing, etc.
-
-    args:
-      move (Move): The current position of the piece and the desired place of the piece.
     """
     piece = self.board[move.j][move.i]
     self.board[move.nj][move.ni] = piece

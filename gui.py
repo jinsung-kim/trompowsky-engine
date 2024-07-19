@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional
 
 import pygame  # type: ignore
 from board import Board
@@ -101,6 +101,9 @@ class Gui:
     pygame.draw.rect(self.game_display, color,
                      pygame.Rect(i, j, SQUARE_SIDE, SQUARE_SIDE))
 
+  def draw_circle(self, i, j, color, radius=5):
+    pygame.draw.circle(self.game_display, color, (i, j), radius)
+
   def draw_pieces(self, board: Board):
     for i in range(8):
       for j in range(8):
@@ -110,17 +113,19 @@ class Gui:
   def highlight_moves(self, engine: Engine):
     if self.last_selected is not None:
       i, j = self.last_selected
-      piece = engine.board.board[j][i]
-      if piece == '--':
+      if engine.board.board[j][i] == '--':
         return
-
-      self.draw_square(i * 50, j * 50, YELLOW)
+      self.draw_square(i * 50, j * 50, BLUE_DARK)
 
       valid_moves = engine.generate_valid_moves('w')
       for move in valid_moves:
         if move.i == i and move.j == j:
-          ci, cj = move.ni * 50, move.nj * 50
-          self.draw_square(ci, cj, BLUE_LIGHT)
+          if move.captured_piece is None:
+            ci, cj = move.ni * 50 + 25, move.nj * 50 + 25
+            self.draw_circle(ci, cj, BLUE_LIGHT)
+          else:
+            ci, cj = move.ni * 50, move.nj * 50
+            self.draw_square(ci, cj, YELLOW)
 
   def update_game_state(self, engine):
     self.draw_board()
