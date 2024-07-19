@@ -205,10 +205,10 @@ class Engine:
       if not in_check:
         valid_moves.append(move)
 
-      if c == 'w':
-        self.board.wk_pos = (move.i, move.j)
-      else:
-        self.board.bk_pos = (move.i, move.j)
+    if c == 'w':
+      self.board.wk_pos = (i, j)
+    else:
+      self.board.bk_pos = (i, j)
 
     return valid_moves
 
@@ -217,13 +217,10 @@ class Engine:
     Returns all moves accounting for checks.
     """
     self.in_check, self.checks, self.pins = self.get_checks_and_pins(c)
-    print('generate_valid_moves:')
-    print(self.in_check, self.checks, self.pins)
     if c == 'w':
       k_pos = self.board.wk_pos
     else:
       k_pos = self.board.bk_pos
-    print(k_pos)
 
     if self.in_check:
       if len(self.checks) == 1:
@@ -240,6 +237,7 @@ class Engine:
             valid_squares.append(valid_square)
             if valid_square[0] == check.i and valid_square[1] == check.j:
               break
+
         # Remove moves that don't block the check or move the king.
         for move in moves[::-1]:
           if self.board.board[move.j][move.i][1] != 'K' and not (move.ni, move.nj) in valid_squares:
@@ -254,6 +252,9 @@ class Engine:
         self.checkmate = True
       else:
         self.stalemate = True
+    else:
+      self.checkmate = False
+      self.stalemate = False
 
     return moves
 
@@ -282,12 +283,13 @@ class Engine:
 
     oppo = get_opposite_color(c)
     start_pos = self.board.wk_pos if c == 'w' else self.board.bk_pos
+
     for i in range(len(Movement.King)):
       d = Movement.King[i]
       possible_pin = None
       for mult in range(1, 8):
-        ci = start_pos[0] + d[0] * mult
-        cj = start_pos[1] + d[1] * mult
+        ci = start_pos[0] + (d[0] * mult)
+        cj = start_pos[1] + (d[1] * mult)
         if self.in_bounds(ci, cj):
           c_piece = self.board.board[cj][ci]
           if c_piece[0] == c and c_piece[1] != 'K':

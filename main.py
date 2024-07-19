@@ -7,8 +7,6 @@ from ai import Ai
 from move import Move
 from random import choice
 
-MAX_FPS = 30
-
 if __name__ == '__main__':
   pygame.init()
   pygame.display.set_caption('Chess')
@@ -17,9 +15,6 @@ if __name__ == '__main__':
   engine = Engine(board)
   gui = Gui()
   ai = Ai(depth=3)
-
-  clock = pygame.time.Clock()
-  clock.tick(MAX_FPS)
 
   def process_move(move: Move):
     board.make_move(move)
@@ -52,9 +47,12 @@ if __name__ == '__main__':
       print('Tie. Stalemate.')
       return False
 
+    gui.update_game_state(engine)
     return True
 
   running = True
+
+  gui.update_game_state(engine)
   while running:
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -73,11 +71,6 @@ if __name__ == '__main__':
             if current_move in valid_moves:
               running = process_move(current_move)
 
-      gui.update_game_state(engine)
-
   board.log_game()
 
-  while True:
-    continue
-
-  # pygame.quit()
+  pygame.quit()

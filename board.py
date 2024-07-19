@@ -34,7 +34,6 @@ class Board:
     else:
       self.board = deepcopy(START_BOARD)
 
-    # TODO: Track all of the game moves.
     self.game_log = []
     self.console_moves = console_moves
 
@@ -44,7 +43,6 @@ class Board:
     self.bk_pos = (4, 0)
 
   def __repr__(self) -> str:
-    print(self.board)
     return '\n' + '\n'.join([' '.join(row) for row in self.board]) + '\n'
 
   def clear_board(self):

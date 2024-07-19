@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 import pygame  # type: ignore
 from board import Board
@@ -54,6 +54,7 @@ class Gui:
   def __init__(self):
     self.game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     self.last_selected: Optional[tuple[int, int]] = None
+    self.clicks: List[tuple[int, int]] = []
 
   @staticmethod
   def round_coords(x, y) -> tuple[int, int]:
@@ -66,8 +67,12 @@ class Gui:
     return i, j
 
   def register_click(self, i, j, board: Board) -> bool:
+    if self.last_selected is not None and self.last_selected == (i, j):
+      self.clicks.clear()
+      self.last_selected = None
     if 'w' in board.board[j][i]:
       self.last_selected = (i, j)
+      self.clicks.append((i, j))
       return True
     else:
       return False

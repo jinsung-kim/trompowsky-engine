@@ -1,5 +1,5 @@
 import math
-from typing import List, Optional
+from typing import List
 from move import Move
 
 
@@ -13,8 +13,8 @@ class Movement:
   # This is critical to understand the pin/check logic function.
   King = [(1, 0), (0, 1),
           (-1, 0), (0, -1),
-          (-1, -1), (-1, 1),
-          (1, -1), (1, 1)]
+          (1, -1), (-1, -1),
+          (-1, 1), (1, 1)]
 
 
 def truncate(f, n):
