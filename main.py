@@ -9,7 +9,7 @@ from move import Move
 if __name__ == '__main__':
   pygame.init()
   pygame.display.set_caption('Chess')
-  # TODO: Set display icon.
+  pygame.display.set_icon(pygame.image.load("assets/wK.png"))
 
   board = Board()
   engine = Engine(board)
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
   while not gui.exit:
     for event in pygame.event.get():
-      gui.exit = True
       board.log_game()
+      gui.exit = True
 
   pygame.quit()
