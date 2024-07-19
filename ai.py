@@ -1,7 +1,7 @@
 from engine import Engine
 from move import Move
 from typing import List, Optional
-from random import shuffle
+from random import shuffle, choice
 
 
 class Ai:
@@ -12,10 +12,10 @@ class Ai:
     self.depth = depth
     self.next_move: Optional[Move] = None
 
-  def find_optimal_move(self, valid_moves: List[Move], engine: Engine) -> Optional[Move]:
+  def find_optimal_move(self, engine: Engine) -> Optional[Move]:
     self.next_move = None
-    shuffle(valid_moves)
-    self.find_alpha_beta_prune_move(valid_moves, engine, self.depth, -10000, 10000, -1)
+    shuffle(engine.black_moves)
+    self.find_alpha_beta_prune_move(engine.black_moves, engine, self.depth, -10000, 10000, -1)
     return self.next_move
 
   def find_alpha_beta_prune_move(self, valid_moves: List[Move], engine: Engine, depth: int,
@@ -43,3 +43,22 @@ class Ai:
         break
 
     return max_score
+
+  def make_optimal_move(self, engine: Engine) -> bool:
+    """
+    Makes the in most cases the optimal move, and then checks the game state.
+    :return: Whether the game is over or not.
+    """
+    engine.refresh_moves_and_game_state('b')
+
+    optimal_move_maybe = self.find_optimal_move(engine)
+
+    if optimal_move_maybe is None:
+      random_move = choice(engine.black_moves)
+      engine.board.make_move(random_move)
+      engine.board.log_move(random_move)
+    else:
+      engine.board.make_move(optimal_move_maybe)
+      engine.board.log_move(optimal_move_maybe)
+
+    return engine.check_game_over()

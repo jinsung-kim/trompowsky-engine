@@ -4,6 +4,7 @@ import pygame  # type: ignore
 from board import Board
 from engine import Engine
 from helpers import truncate
+from move import Move
 
 DISPLAY_HEIGHT = 400
 DISPLAY_WIDTH = 400
@@ -54,7 +55,7 @@ class Gui:
   def __init__(self):
     self.game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     self.last_selected: Optional[tuple[int, int]] = None
-    self.clicks: List[tuple[int, int]] = []
+    self.exit: bool = False
 
   @staticmethod
   def round_coords(x, y) -> tuple[int, int]:
@@ -66,15 +67,26 @@ class Gui:
     j = int(truncate(y / 50, 0))
     return i, j
 
-  def register_click(self, i, j, board: Board) -> bool:
+  def register_click(self, i, j, engine: Engine) -> bool:
+    """
+    Register the click.
+    :return: Whether the input has led to a valid move.
+    """
+    # Deselect current selection.
     if self.last_selected is not None and self.last_selected == (i, j):
-      self.clicks.clear()
       self.last_selected = None
-    if 'w' in board.board[j][i]:
+      return False
+    # Trying to initiate a move.
+    if 'w' in engine.board.board[j][i]:
       self.last_selected = (i, j)
-      self.clicks.append((i, j))
-      return True
-    else:
+      return False
+    # Potentially capturing another piece.
+    elif self.last_selected is not None:
+      for potential_move in engine.white_moves:
+        if potential_move == Move(self.last_selected[0], self.last_selected[1], i, j):
+          return True
+      # An invalid move was selected.
+      self.last_selected = None
       return False
 
   def draw_board(self):

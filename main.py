@@ -5,7 +5,6 @@ from gui import Gui
 from board import Board
 from ai import Ai
 from move import Move
-from random import choice
 
 if __name__ == '__main__':
   pygame.init()
@@ -20,35 +19,12 @@ if __name__ == '__main__':
     board.make_move(move)
     board.log_move(move)
 
-    valid_ai_moves = engine.generate_valid_moves('b')
-    if engine.checkmate:
-      print('White wins. Black was checkmated.')
+    if engine.check_game_over():
       return False
-    elif engine.stalemate:
-      print('Tie. Stalemate.')
-      return False
-
-    optimal_move = ai.find_optimal_move(valid_ai_moves, engine)
-
-    # FIXME: Prevent the AI from actually capturing the king.
-    if optimal_move is None:
-      random_move = choice(valid_ai_moves)
-      board.make_move(random_move)
-      board.log_move(random_move)
-    else:
-      board.make_move(optimal_move)
-      board.log_move(optimal_move)
-
-    _ = engine.generate_valid_moves('w')
-    if engine.checkmate:
-      print('Black wins. White was checkmated.')
-      return False
-    elif engine.stalemate:
-      print('Tie. Stalemate.')
-      return False
+    ai.make_optimal_move(engine)
 
     gui.update_game_state(engine)
-    return True
+    return not engine.check_game_over()
 
   running = True
 
@@ -59,17 +35,18 @@ if __name__ == '__main__':
         running = False
       elif event.type == pygame.MOUSEBUTTONDOWN:
         if event.button == 1:  # Left mouse button.
+          engine.refresh_moves_and_game_state('w')
+
           mouse_cor = pygame.mouse.get_pos()
-          mouse_x_cor = mouse_cor[0]
-          mouse_y_cor = mouse_cor[1]
+          mouse_x_cor, mouse_y_cor = mouse_cor[0], mouse_cor[1]
           i, j = gui.round_coords(mouse_x_cor, mouse_y_cor)
-          gui.register_click(i, j, board)
-          if gui.last_selected is not None and gui.last_selected != (i, j):
+          valid_move_click_registered = gui.register_click(i, j, engine)
+          gui.update_game_state(engine)
+
+          if valid_move_click_registered:
             (pi, pj) = gui.last_selected
-            valid_moves = engine.generate_valid_moves('w')
             current_move = Move(pi, pj, i, j)
-            if current_move in valid_moves:
-              running = process_move(current_move)
+            running = process_move(current_move)
 
   board.log_game()
 

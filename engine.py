@@ -26,10 +26,25 @@ class Engine:
     # Game state
     self.checkmate = False
     self.stalemate = False
+    self.winner = None
+
+    # Instead of calling generate_valid_moves in a bunch of places,
+    # Reuse them when the game state has not been updated.
+    self.white_moves: List[Move] = []
+    self.black_moves: List[Move] = []
 
   @staticmethod
   def in_bounds(i: int, j: int) -> bool:
     return 0 <= i < 8 and 0 <= j < 8
+
+  @staticmethod
+  def infer_direction(move: Move) -> Tuple[int, int]:
+    di = move.ni - move.i
+    dj = move.nj - move.j
+
+    # Normalize the direction by dividing by the GCD of di and dj.
+    g = gcd(abs(di), abs(dj))
+    return di // g, dj // g
 
   def return_valid_move(self, i, j, ni, nj) -> Optional[Move]:
     color = self.board.board[j][i][0]
@@ -42,14 +57,20 @@ class Engine:
     else:
       return None
 
-  @staticmethod
-  def infer_direction(move: Move) -> Tuple[int, int]:
-    di = move.ni - move.i
-    dj = move.nj - move.j
+  def check_game_over(self) -> bool:
+    return any([self.checkmate, self.stalemate])
 
-    # Normalize the direction by dividing by the GCD of di and dj.
-    g = gcd(abs(di), abs(dj))
-    return di // g, dj // g
+  def refresh_moves_and_game_state(self, c: str):
+    """
+    Used to refresh the white moves given the game state.
+    ALso refreshes the game state. A checkmate right after this call indicates a white win.
+    """
+    valid_moves = self.generate_valid_moves(c)
+
+    if c == 'w':
+      self.white_moves = valid_moves
+    else:
+      self.black_moves = valid_moves
 
   def find_pin(self, i, j, is_queen: bool) -> Optional[MoveBlockVector]:
     """
@@ -250,6 +271,7 @@ class Engine:
     if len(moves) == 0:
       if self.in_check:
         self.checkmate = True
+        self.winner = get_opposite_color(c)
       else:
         self.stalemate = True
     else:
