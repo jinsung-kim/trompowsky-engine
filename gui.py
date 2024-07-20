@@ -115,20 +115,27 @@ class Gui:
       i, j = self.last_selected
       if engine.board.board[j][i] == '--':
         return
-      self.draw_square(i * 50, j * 50, BLUE_DARK)
+      self.draw_square(i * 50, j * 50, BLUE_LIGHT)
 
-      valid_moves = engine.generate_valid_moves('w')
-      for move in valid_moves:
+      for move in engine.white_moves:
         if move.i == i and move.j == j:
           if move.captured_piece is None:
             ci, cj = move.ni * 50 + 25, move.nj * 50 + 25
             self.draw_circle(ci, cj, BLUE_LIGHT)
           else:
             ci, cj = move.ni * 50, move.nj * 50
-            self.draw_square(ci, cj, YELLOW)
+            self.draw_square(ci, cj, BLUE_DARK)
+
+  def highlight_white_check(self, engine: Engine):
+    # Do this to warn about a potential white check.
+    engine.refresh_moves_and_game_state('w')
+    if engine.in_check:
+      i, j = engine.board.wk_pos
+      self.draw_square(i * 50, j * 50, RED_CHECK)
 
   def update_game_state(self, engine):
     self.draw_board()
     self.highlight_moves(engine)
+    self.highlight_white_check(engine)
     self.draw_pieces(engine.board)
     pygame.display.update()
