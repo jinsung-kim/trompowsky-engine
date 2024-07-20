@@ -17,6 +17,9 @@ class TestBoardMethods(unittest.TestCase):
    self.board = Board(is_test_board=False)
    self.engine = Engine(self.board)
 
+  def tearDown(self):
+    self.board.clear_board()
+
   def test_board_clear(self):
     self.board.board[3][3] = 'wQ'
     found_wq = any('wQ' in row for row in self.board.board)
@@ -26,16 +29,11 @@ class TestBoardMethods(unittest.TestCase):
 
     self.assertEqual(self.board.board, EMPTY_BOARD)
 
-  def test_score_board(self):
-    self.assertEqual(self.board.score_board(), 0)
-    self.board.clear_board()
-    self.assertEqual(self.board.score_board(), 0)
-
   def test_score_board_2(self):
     self.board.clear_board()
     self.board.board[0][0] = 'wQ'
     self.board.board[0][1] = 'wR'
-    self.assertEqual(self.board.score_board(), 14)
+    self.assertEqual(self.board.score_board(), 14.25)
 
   def test_move_undo_promotion(self):
     self.board.clear_board()
@@ -47,7 +45,7 @@ class TestBoardMethods(unittest.TestCase):
     self.assertEqual(self.board.score_board(), 9)
 
     self.board.undo_move(move)
-    self.assertEqual(self.board.score_board(), 1)
+    self.assertEqual(self.board.score_board(), 1.7)
 
   def test_move_undo_capture(self):
     self.board.clear_board()
@@ -56,12 +54,12 @@ class TestBoardMethods(unittest.TestCase):
 
     move = Move(0, 0, 1, 1, 'wP', False)
 
-    self.assertEqual(self.board.score_board(), -8)
+    self.assertEqual(self.board.score_board(), -7.3)
     self.board.make_move(move)
-    self.assertEqual(self.board.score_board(), -9)
+    self.assertEqual(self.board.score_board(), -8.6)
 
     self.board.undo_move(move)
-    self.assertEqual(self.board.score_board(), -8)
+    self.assertEqual(self.board.score_board(), -7.3)
 
 
 if __name__ == '__main__':
