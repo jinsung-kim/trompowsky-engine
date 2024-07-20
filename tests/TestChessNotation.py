@@ -67,6 +67,16 @@ class TestChessNotation(unittest.TestCase):
     move = Move(4, 0, 4, 4, 'bP')
     self.assertEqual(self.board.log_move(move), 'Rxe4')
 
+  def test_standard_notation_with_check(self):
+    self.board.board[0][3] = 'wQ'
+    move = Move(2, 0, 3, 0)
+    self.assertEqual(self.board.log_move(move, True, False), 'Qd8+')
+
+  def test_standard_notation_with_checkmate(self):
+    self.board.board[0][3] = 'wQ'
+    move = Move(2, 0, 3, 0)
+    self.assertEqual(self.board.log_move(move, True, True), 'Qd8#')
+
 
 if __name__ == '__main__':
   unittest.main()

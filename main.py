@@ -17,7 +17,7 @@ if __name__ == '__main__':
   board = Board()
   engine = Engine(board)
   gui = Gui()
-  ai = Ai(depth=0)
+  ai = Ai(depth=3)
 
   def process_move(move: Move):
     board.make_move(move)
