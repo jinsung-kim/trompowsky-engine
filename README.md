@@ -14,7 +14,7 @@ Strengthening the AI requires setting the depth to a higher value.
 - At two, the AI will aim to take pieces that are available while considering the net cost of the opposing piece that might react based on the move.
 - Anything beyond this just tries to create the most optimal position.
   Note: While higher depths are great for strengthening the brainpower of the AI, it also takes exponentially more time to generate moves, given that each move opens up a whole new set of opposing moves to consider.
-- 
+ 
 ##### Testing
 Testing was a critical part of the development cycle. This was one of the first projects where I wrote unit test cases before writing out the functionality. I did this to ensure that I would not waste too much time debugging (it happened anyway). The sanity checking saved a lot of time but still needs work to capture the overall game flow and edge cases. To run the tests, simply run: `python3 tests/run_tests.py`.
 
