@@ -120,7 +120,7 @@ class Board:
 
     return {'file': files[i], 'rank': ranks[j]}
 
-  def log_move(self, move: Move):
+  def log_move(self, move: Move, in_check: bool = False, checkmate: bool = False):
     """
     Logs the provided move into the game log.
     Must be called after the move is complete.
@@ -144,14 +144,21 @@ class Board:
         notation += 'x'
       notation += destination_pos
 
+    if checkmate:
+      notation += '#'
+    elif in_check:
+      notation += '+'
+
     self.game_log.append(notation)
 
     return notation
 
   def log_game(self):
+    move_step = 1
     for i in range(0, len(self.game_log), 2):
-      move_c = i // 2
       if i + 1 < len(self.game_log):
-        print(move_c, self.game_log[i], self.game_log[i + 1])
+        print(move_step, self.game_log[i], self.game_log[i + 1])
       else:
-        print(move_c, self.game_log[i], "...")
+        print(move_step, self.game_log[i])
+
+      move_step += 1

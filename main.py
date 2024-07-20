@@ -1,3 +1,6 @@
+from os import environ
+environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+
 import pygame  # type: ignore
 
 from engine import Engine
@@ -14,11 +17,13 @@ if __name__ == '__main__':
   board = Board()
   engine = Engine(board)
   gui = Gui()
-  ai = Ai(depth=3)
+  ai = Ai(depth=0)
 
   def process_move(move: Move):
     board.make_move(move)
-    board.log_move(move)
+
+    engine.refresh_moves_and_game_state('b')
+    board.log_move(move, engine.in_check, engine.checkmate)
 
     if engine.check_game_over():
       return False
@@ -34,6 +39,7 @@ if __name__ == '__main__':
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         running = False
+        gui.exit = True
       elif event.type == pygame.MOUSEBUTTONDOWN:
         if event.button == 1:  # Left mouse button.
           engine.refresh_moves_and_game_state('w')
@@ -51,7 +57,8 @@ if __name__ == '__main__':
 
   while not gui.exit:
     for event in pygame.event.get():
-      board.log_game()
       gui.exit = True
+
+  board.log_game()
 
   pygame.quit()

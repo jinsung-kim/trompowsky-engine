@@ -54,11 +54,11 @@ class Ai:
     optimal_move_maybe = self.find_optimal_move(engine)
 
     if optimal_move_maybe is None:
-      random_move = choice(engine.black_moves)
-      engine.board.make_move(random_move)
-      engine.board.log_move(random_move)
-    else:
-      engine.board.make_move(optimal_move_maybe)
-      engine.board.log_move(optimal_move_maybe)
+      optimal_move_maybe = choice(engine.black_moves)
+
+    engine.board.make_move(optimal_move_maybe)
+
+    engine.refresh_moves_and_game_state('w')
+    engine.board.log_move(optimal_move_maybe, engine.in_check, engine.checkmate)
 
     return engine.check_game_over()
