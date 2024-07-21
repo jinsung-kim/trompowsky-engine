@@ -133,9 +133,10 @@ class Gui:
       i, j = engine.board.wk_pos
       self.draw_square(i * 50, j * 50, RED_CHECK)
 
-  def update_game_state(self, engine):
+  def update_game_state(self, engine: Engine, skip_white_check: bool = False):
     self.draw_board()
     self.highlight_moves(engine)
-    self.highlight_white_check(engine)
+    if not skip_white_check:
+      self.highlight_white_check(engine)
     self.draw_pieces(engine.board)
     pygame.display.update()

@@ -17,10 +17,13 @@ if __name__ == '__main__':
   board = Board()
   engine = Engine(board)
   gui = Gui()
-  ai = Ai(depth=3)
+  # Recommend 3 for smooth instant move generation. TODO: Need to thread this somehow.
+  ai = Ai(depth=4)
 
   def process_move(move: Move):
     board.make_move(move)
+    # Since white went, we can assume that it would not put the king in check.
+    gui.update_game_state(engine, skip_white_check=True)
 
     engine.refresh_moves_and_game_state('b')
     board.log_move(move, engine.in_check, engine.checkmate)
