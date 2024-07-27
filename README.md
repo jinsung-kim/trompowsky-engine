@@ -1,3 +1,6 @@
+<img width="512" alt="chess" src="https://github.com/user-attachments/assets/e59057e5-4eec-47f2-83ac-3b75fd8f2ff9">
+
+
 If you are interested in building a chess engine—don't. As someone who has now done it, I can promise that it will never be perfect, and there will always be ways to improve it. That being said, the Trompowsky Engine is my rendition of a chess engine built pretty much from scratch, with the exception of _pygame_.
 
 ##### Methodology
@@ -28,5 +31,5 @@ Testing was a critical part of the development cycle. This was one of the first 
 - [ ] Multithreaded move generation to speed up the AI
 - [ ] Ability to input a game log to restore and continue at that state of the game
 - [ ] Compare this engine with other engines
-- [ ] Rewrite in C? (I'm confident that I could improve the performance of this code significantly using bit masks - I'm delusional)
+- [ ] Rewrite using bitmasks?
 
