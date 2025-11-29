@@ -1,7 +1,7 @@
 <img width="512" alt="chess" src="https://github.com/user-attachments/assets/e59057e5-4eec-47f2-83ac-3b75fd8f2ff9">
 
 
-Tthe Trompowsky Engine is my rendition of a chess engine built pretty much from scratch, with the exception of the _pygame_ import.
+The Trompowsky Engine is my rendition of a chess engine built pretty much from scratch, with the exception of the _pygame_ import.
 
 ##### Methodology
 The AI itself is rather simple. In fact, if you sift through the code, most of it consists of tests to ensure the correctness of the game, and the rest is the code that generates moves. The AI itself is really primitive. Given that chess is generally a zero-sum game, the main algorithm is basically just an implementation of the minimax game theory with some optimizations along the way:
